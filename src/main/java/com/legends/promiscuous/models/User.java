@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "users_table")
@@ -43,7 +45,14 @@ public class User {
     private Role role;
 
     private boolean isActive;
-
     private LocalDateTime createdAt;
+
+
+    @PrePersist
+    public void setCreatedAt(){
+        var currentTime = LocalDateTime.now();
+        currentTime.format(DateTimeFormatter.ofPattern(""))
+        createdAt = LocalDateTime.now();
+    }
 
 }

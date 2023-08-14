@@ -43,7 +43,6 @@ public class PromiscuousUserService implements UserService{
         user.setEmail(email);
         user.setPassword(password);
         user.setAddress(new Address());
-        user.setCreatedAt(LocalDateTime.now());
         //3. save that users profile in the Database
         User savedUser = userRepository.save(user);
         log.info("saved guy-->{}", savedUser);
