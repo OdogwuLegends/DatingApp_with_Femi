@@ -13,7 +13,10 @@ import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -79,7 +82,8 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public List<GetUserResponse> getAllUsers(int page, int pageSize) {
-        return null;
+        Pageable pageable = PageRequest.of(page,pageSize);
+        userRepository.findAll()
     }
 
     private ApiResponse<?> activateAccount(String token) {
