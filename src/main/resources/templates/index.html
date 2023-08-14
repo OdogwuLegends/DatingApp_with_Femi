@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./icons/icons8-p-64.png">
+    <title>Document</title>
+</head>
+<body>
+<style>
+        p{
+            font-family: Arial;
+        }
+
+        .text{
+            width: 300px;
+            line-height: 20px;
+        }
+
+        .activate{
+            background-color: rgb(0, 149, 255);
+            color: white;
+            border: none;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-radius: 22px;
+            transition: all 0.5s;
+            margin-left: 80px;
+            font-family: Arial;
+            font-weight: bold;
+        }
+
+        .activate:hover{
+            cursor: pointer;
+            background-color: white;
+            color: rgb(0, 149, 255);
+            border: 1px solid rgb(0, 149, 255);
+        }
+
+        .activate:active{
+            background-color: rgb(0, 149, 255);
+            color: white;
+        }
+
+        .main-container{
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            align-self: center;
+            position: absolute;
+            top: 80px;
+            left: 200px;
+        }
+
+        .logo{
+            width: 400px;
+            margin-left: 0;
+            border:none;
+        }
+
+        .social-links{
+            margin-left: 70px;
+        }
+
+        .bottom-section{
+            margin-left: 50px;
+        }
+
+        .social-links img{
+            width: 25px;
+            margin-top: 20px;
+            margin-right: 0;
+            margin-top: 0;
+        }
+
+        .social-links-description{
+            font-size: 14px;
+            color: #969696;
+            margin-left: 45px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+<div class="main-container">
+    <img src="https://res.cloudinary.com/dwatxwut1/image/upload/v1691484462/Promiscuous/assets/man_and_woman_i8h6ed.jpg" alt="" class="logo">
+    <div class="bottom-section">
+        <p class="text">
+            Hi %s,
+            Welcome to promiscuous.org, we are pleased to have you,
+            please click on the button below to activate your account.
+        </p>
+        <a href=\"%s\">
+            <button type="button" class="activate">
+                Activate
+            </button>
+        </a>
+
+        <p class="social-links-description">join our social communities:</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com">
+                <img src="https://res.cloudinary.com/dwatxwut1/image/upload/v1691484461/Promiscuous/assets/facebook_img_udrowc.jpg" alt="" class="facebook-icon">
+            </a>
+            <a href="https://www.twitter.com">
+                <img src="https://res.cloudinary.com/dwatxwut1/image/upload/v1691484461/Promiscuous/assets/Twitter_img_bp0qll.jpg" alt="" class="twitter icon">
+            </a>
+            <a href="https://www.instagram.com">
+                <img src="https://res.cloudinary.com/dwatxwut1/image/upload/v1691484461/Promiscuous/assets/IG_img_jn5xri.jpg" alt="" class="instagram-icon">
+            </a>
+            <a href="https://www.linkedin.com">
+                <img src="https://res.cloudinary.com/dwatxwut1/image/upload/v1691484461/Promiscuous/assets/linkedIn_img_uz9t70.jpg" alt="" class="linkedin-icon">
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
