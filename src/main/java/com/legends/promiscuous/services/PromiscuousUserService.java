@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_NOT_FOUND_EXCEPTION;
 import static com.legends.promiscuous.utils.AppUtil.*;
 import static com.legends.promiscuous.utils.JwtUtil.extractEmailFrom;
 import static com.legends.promiscuous.utils.JwtUtil.validateToken;
@@ -67,7 +68,10 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public GetUserResponse getUserById(long id) {
-        return null;
+        Optional<User> foundUser = userRepository.findById(id);
+        User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
+        GetUserResponse getUserResponse = buildGetUserResponse(user);
+        return getUserResponse;
     }
 
     private ApiResponse<?> activateAccount(String token) {
@@ -93,7 +97,7 @@ public class PromiscuousUserService implements UserService{
     private static GetUserResponse buildGetUserResponse(User savedUser) {
         return GetUserResponse.builder()
                 .id(savedUser.getId())
-                .address(savedUser.getAddress().toString())
+//                .address(savedUser.getAddress().toString())
                 .fullName(getFullName(savedUser))
                 .phoneNumber(savedUser.getPhoneNumber())
                 .email(savedUser.getEmail())
