@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     private ObjectMapper mapper = new ObjectMapper();
 
 
@@ -42,6 +41,5 @@ public class UserControllerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }
