@@ -26,7 +26,6 @@ public class UserControllerTest {
 
     @Test
     void testRegister(){
-
         try {
             RegisterUserRequest request = new RegisterUserRequest();
             request.setEmail("ciwano4292@viperace.com");

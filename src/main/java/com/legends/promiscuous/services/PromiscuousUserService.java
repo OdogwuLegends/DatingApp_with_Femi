@@ -98,7 +98,7 @@ public class PromiscuousUserService implements UserService{
                 //OR USE LAMBDA
         return foundUsers.stream()
 //                .map(PromiscuousUserService::buildGetUserResponse)
-                .map(buildGetUserResponse)
+                .map(user -> buildGetUserResponse(user))
                 .toList();
     }
 
