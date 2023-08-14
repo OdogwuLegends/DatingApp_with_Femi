@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
     @Value("${mail.api.key}")
     private String mailApiKey;
+    @Value("${app.base.url}")
+    private String baseUrl;
 
     @Value("${app.dev.token}")
     private String testToken;
@@ -18,4 +20,6 @@ public class AppConfig {
     public String getTestToken() {
         return testToken;
     }
+
+    public String getBaseUrl(){ return baseUrl; }
 }

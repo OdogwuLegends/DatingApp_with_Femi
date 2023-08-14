@@ -4,10 +4,7 @@ import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.EmailNotificationRequest;
 import com.legends.promiscuous.dtos.requests.Recipient;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
-import com.legends.promiscuous.dtos.response.ActivateAccountResponse;
-import com.legends.promiscuous.dtos.response.ApiResponse;
-import com.legends.promiscuous.dtos.response.GetUserResponse;
-import com.legends.promiscuous.dtos.response.RegisterUserResponse;
+import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
 import com.legends.promiscuous.exceptions.ExceptionMessage;
 import com.legends.promiscuous.exceptions.UserNotFoundException;
@@ -21,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.legends.promiscuous.utils.AppUtils.*;
+import static com.legends.promiscuous.utils.AppUtil.*;
+import static com.legends.promiscuous.utils.JwtUtil.extractEmailFrom;
+import static com.legends.promiscuous.utils.JwtUtil.validateToken;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class PromiscuousUserService implements UserService{
 
         //5. return a response
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
-        registerUserResponse.setMessage("Registration Successful, check your mailbox to activate your account");
+        registerUserResponse.setMessage(ResponseMessage.USER_REGISTRATION_SUCCESSFUL.name());
 
         return registerUserResponse;
     }
@@ -81,7 +80,7 @@ public class PromiscuousUserService implements UserService{
 
     private static ActivateAccountResponse buildActivateUserResponse(GetUserResponse userResponse) {
         return ActivateAccountResponse.builder()
-                .message("Account activation successful")
+                .message(ResponseMessage.ACCOUNT_ACTIVATION_SUCCESSFUL.name())
                 .user(userResponse)
                 .build();
     }
@@ -97,7 +96,7 @@ public class PromiscuousUserService implements UserService{
     }
 
     private static String getFullName(User savedUser) {
-        return savedUser.getFirstName() + " " + savedUser.getLastName();
+        return savedUser.getFirstName() + BLANK_SPACE + savedUser.getLastName();
     }
 
     private static ApiResponse<?> activateTestAccount() {
@@ -120,7 +119,6 @@ public class PromiscuousUserService implements UserService{
 
         String mailContent = String.format(emailTemplate, activationLink);
         request.setMailContent(mailContent);
-
 
         return request;
     }

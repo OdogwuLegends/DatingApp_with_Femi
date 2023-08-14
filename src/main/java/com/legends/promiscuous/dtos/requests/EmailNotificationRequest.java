@@ -1,7 +1,6 @@
 package com.legends.promiscuous.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.legends.promiscuous.utils.AppUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
-import static com.legends.promiscuous.utils.AppUtils.APP_EMAIL;
-import static com.legends.promiscuous.utils.AppUtils.APP_NAME;
+import static com.legends.promiscuous.utils.AppUtil.APP_EMAIL;
+import static com.legends.promiscuous.utils.AppUtil.APP_NAME;
 
 @AllArgsConstructor
 @Getter

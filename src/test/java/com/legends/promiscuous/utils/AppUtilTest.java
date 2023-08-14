@@ -4,13 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-class AppUtilsTest {
+class AppUtilTest {
     @Test
     public void testGenerateActivationLink(){
-        String activationLink =  AppUtils.generateActivationLink("test@gmail.com");
+        String activationLink =  AppUtil.generateActivationLink("test@gmail.com");
         log.info("activation link -> {} ", activationLink);
         assertThat(activationLink).isNotNull();
         assertThat(activationLink).contains("http://localhost:8080/activate?code=");
@@ -19,7 +18,7 @@ class AppUtilsTest {
     @Test
     public void generateTokenTest(){
         String email = "test@gmail.com";
-        String token = AppUtils.generateToken(email);
+        String token = JwtUtil.generateToken(email);
         log.info("generated token ->{}",token);
         assertThat(token).isNotNull();
     }
