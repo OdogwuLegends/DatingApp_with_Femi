@@ -57,35 +57,25 @@ public class PromiscuousUserService implements UserService{
     @Override
     public ApiResponse<?> activateUserAccount(String token) {
         boolean isTestToken = token.equals(appConfig.getTestToken());
-        if(isTestToken) return getApiResponse();
+        if (isTestToken ) return activateTestAccount();
 
-        boolean isValidJwtToken = validateToken(token);
-        if(isValidJwtToken){
-            String email = extractEmailFrom(token);
-            Optional<User> user = userRepository.findByEmail(email);
-            User foundUser = user.orElseThrow(()-> new UserNotFoundException("User not found"));
-            foundUser.setActive(true);
-            User savedUser = userRepository.save(foundUser);
-            GetUserResponse userResponse = buildGetUserResponse(savedUser);
-            var activateUserResponse = buildActivateUserResponse(userResponse);
-            return ApiResponse.builder().data(activateUserResponse).build();
-        }
-        throw  new AccountActivationFailedException("Account activation was not successful");
+        boolean isValidJwt = validateToken(token);
+        if (isValidJwt) return activateAccount(token);
+
+        throw new AccountActivationFailedException("Account activation was not successful");
     }
 
-    private static GetUserResponse buildGetUserResponse(User savedUser) {
-        return GetUserResponse.builder()
-                .id(savedUser.getId())
-                .address(savedUser.getAddress().toString())
-                .fullName(getFullName(savedUser))
-                .email(savedUser.getEmail())
-                .phoneNumber(savedUser.getPhoneNumber())
-                .build();
+    private ApiResponse<?> activateAccount(String token) {
+        String email = extractEmailFrom(token);
+        Optional<User> user = userRepository.findByEmail(email);
+        User foundUser = user.orElseThrow(() ->new UserNotFoundException("user not found"));
+        foundUser.setActive(true);
+        User savedUser = userRepository.save(foundUser);
+        GetUserResponse userResponse = buildGetUserResponse(savedUser);
+        var activateUserResponse = buildActivateUserResponse(userResponse);
+        return ApiResponse .builder().data(activateUserResponse).build();
     }
 
-    private static String getFullName(User savedUser) {
-        return savedUser.getFirstName() + " " + savedUser.getLastName();
-    }
 
     private static ActivateAccountResponse buildActivateUserResponse(GetUserResponse userResponse) {
         return ActivateAccountResponse.builder()
@@ -94,15 +84,30 @@ public class PromiscuousUserService implements UserService{
                 .build();
     }
 
-    private static ApiResponse<?> getApiResponse() {
-        ApiResponse<?> activateAccountResponse =
-                ApiResponse.builder()
+    private static GetUserResponse buildGetUserResponse(User savedUser) {
+        return GetUserResponse.builder()
+                .id(savedUser.getId())
+                .address(savedUser.getAddress().toString())
+                .fullName(getFullName(savedUser))
+                .phoneNumber(savedUser.getPhoneNumber())
+                .email(savedUser.getEmail())
                 .build();
+    }
+
+    private static String getFullName(User savedUser) {
+        return savedUser.getFirstName() + " " + savedUser.getLastName();
+    }
+
+    private static ApiResponse<?> activateTestAccount() {
+        ApiResponse<?> activateAccountResponse =
+                ApiResponse
+                        .builder()
+                        .build();
         return activateAccountResponse;
     }
 
-    private EmailNotificationRequest buildEmailRequest(User savedUser) {
-        EmailNotificationRequest request =  new EmailNotificationRequest();
+    public static EmailNotificationRequest buildEmailRequest(User savedUser) {
+        EmailNotificationRequest request = new EmailNotificationRequest();
         List<Recipient> recipients = new ArrayList<>();
         Recipient recipient = new Recipient(savedUser.getEmail());
         recipients.add(recipient);
@@ -110,8 +115,10 @@ public class PromiscuousUserService implements UserService{
         request.setSubject(WELCOME_MAIL_SUBJECT);
         String activationLink = generateActivationLink(savedUser.getEmail());
         String emailTemplate = getMailTemplate();
-        String mailContent = String.format(emailTemplate,activationLink);
+
+        String mailContent = String.format(emailTemplate, activationLink);
         request.setMailContent(mailContent);
+
 
         return request;
     }
