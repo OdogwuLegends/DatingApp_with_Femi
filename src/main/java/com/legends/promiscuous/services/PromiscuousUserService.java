@@ -84,16 +84,20 @@ public class PromiscuousUserService implements UserService{
     @Override
     public List<GetUserResponse> getAllUsers(int page, int pageSize) {
         List<GetUserResponse> users = new ArrayList<>();
-        
+
         Pageable pageable = buildPageRequest(page,pageSize);
         Page<User> usersPage = userRepository.findAll(pageable);
         List<User> foundUsers =  usersPage.getContent();
 
-        for(User user : foundUsers){
-            GetUserResponse getUserResponse = buildGetUserResponse(user);
-            users.add(getUserResponse);
-        }
-        return users;
+//        for(User user : foundUsers){
+//            GetUserResponse getUserResponse = buildGetUserResponse(user);
+//            users.add(getUserResponse);
+//        }
+//        return users;
+
+        return foundUsers.stream()
+                .map(PromiscuousUserService::buildGetUserResponse)
+                .toList();
     }
 
     private Pageable buildPageRequest(int page, int pageSize) {
