@@ -21,5 +21,6 @@ public class AppConfig {
         return testToken;
     }
 
-    public String getBaseUrl(){ return baseUrl; }
+    public String getBaseUrl(){
+        return baseUrl; }
 }
