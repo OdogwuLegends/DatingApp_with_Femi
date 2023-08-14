@@ -107,7 +107,7 @@ public class PromiscuousUserService implements UserService{
         return activateAccountResponse;
     }
 
-    public static EmailNotificationRequest buildEmailRequest(User savedUser) {
+    private EmailNotificationRequest buildEmailRequest(User savedUser) {
         EmailNotificationRequest request = new EmailNotificationRequest();
         List<Recipient> recipients = new ArrayList<>();
         Recipient recipient = new Recipient(savedUser.getEmail());
