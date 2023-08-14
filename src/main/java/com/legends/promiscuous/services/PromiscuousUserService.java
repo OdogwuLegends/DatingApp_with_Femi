@@ -82,8 +82,8 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public List<GetUserResponse> getAllUsers(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
-        userRepository.findAll()
+        Pageable pageable = PageRequest.of(page - 1,pageSize);
+        userRepository.findAll(pageable);
     }
 
     private ApiResponse<?> activateAccount(String token) {
