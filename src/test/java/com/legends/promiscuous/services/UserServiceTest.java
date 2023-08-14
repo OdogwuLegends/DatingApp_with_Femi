@@ -44,4 +44,10 @@ public class UserServiceTest {
         ApiResponse<?> activateUserAccountResponse = userService.activateUserAccount("abc1234.erytuuoi.67t75646");
         assertThat(activateUserAccountResponse).isNotNull();
     }
+
+    @Test
+    public void getUserByIdTest(){
+        userService.register(registerUserRequest);
+        userService.getUserById(1L);
+    }
 }

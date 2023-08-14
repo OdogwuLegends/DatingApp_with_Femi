@@ -1,6 +1,7 @@
 package com.legends.promiscuous.contollers;
 
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
+import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest request){
-        var response = userService.register(request);
+    public ResponseEntity<RegisterUserResponse> register(@RequestBody RegisterUserRequest request){
+        RegisterUserResponse response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
