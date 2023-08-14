@@ -1,4 +1,4 @@
-package com.legends.promiscuous.controller;
+package com.legends.promiscuous.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
