@@ -6,6 +6,7 @@ import com.legends.promiscuous.dtos.requests.Recipient;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.ActivateAccountResponse;
 import com.legends.promiscuous.dtos.response.ApiResponse;
+import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.models.User;
@@ -58,7 +59,7 @@ public class PromiscuousUserService implements UserService{
         if(isTestToken){
             ApiResponse<?> activateAccountResponse =
                     ApiResponse.builder()
-                    .data(new ActivateAccountResponse("Account activation successful"))
+//                    .data(new ActivateAccountResponse("Account activation successful",))
                     .build();
             return activateAccountResponse;
         }
@@ -68,10 +69,21 @@ public class PromiscuousUserService implements UserService{
             String email = extractEmailFrom(token);
             User foundUser = userRepository.findByEmail(email).orElseThrow();
             foundUser.setActive(true);
-            userRepository.save(foundUser);
+            User savedUser = userRepository.save(foundUser);
+            GetUserResponse userResponse = GetUserResponse.builder()
+                    .id(savedUser.getId())
+                    .address(savedUser.getAddress().toString())
+                    .fullName(savedUser.getFirstName() + " "+savedUser.getLastName())
+                    .email(savedUser.getEmail())
+                    .phoneNumber(savedUser.getPhoneNumber())
+                    .build();
+            var activateUserResponse = ActivateAccountResponse.builder()
+                    .message("Account activation successful")
+                    .user(userResponse)
+                    .build();
             ApiResponse<?> activateAccountResponse =
                     ApiResponse.builder()
-                            .data(new ActivateAccountResponse("Account activation successful"))
+                            .data(activateUserResponse)
                             .build();
             return activateAccountResponse;
         }
