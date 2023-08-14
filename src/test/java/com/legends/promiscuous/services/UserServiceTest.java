@@ -18,6 +18,7 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
     private RegisterUserRequest registerUserRequest;
+    private RegisterUserResponse registerUserResponse;
 
     @BeforeEach
     void setUp(){
@@ -29,16 +30,16 @@ public class UserServiceTest {
 
     @Test
     public void testThatUserCanRegister(){
-        RegisterUserResponse registerUserResponse =  userService.register(registerUserRequest);
-
+        registerUserResponse = userService.register(registerUserRequest);
         assertNotNull(registerUserResponse);
         assertNotNull(registerUserResponse.getMessage());
     }
 
     @Test
     public void testActivateUserAccount(){
-        RegisterUserResponse response = userService.register(registerUserRequest);
-        assertNotNull(response);
+        registerUserRequest.setEmail("test@gmail.com");
+        registerUserResponse = userService.register(registerUserRequest);
+        assertNotNull(registerUserResponse);
 
         ApiResponse<?> activateUserAccountResponse = userService.activateUserAccount("abc1234.erytuuoi.67t75646");
         assertThat(activateUserAccountResponse).isNotNull();
