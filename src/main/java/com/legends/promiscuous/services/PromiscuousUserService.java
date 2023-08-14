@@ -9,6 +9,7 @@ import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
+import com.legends.promiscuous.exceptions.ExceptionMessage;
 import com.legends.promiscuous.exceptions.UserNotFoundException;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
@@ -62,13 +63,14 @@ public class PromiscuousUserService implements UserService{
         boolean isValidJwt = validateToken(token);
         if (isValidJwt) return activateAccount(token);
 
-        throw new AccountActivationFailedException("Account activation was not successful");
+        throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
     }
 
     private ApiResponse<?> activateAccount(String token) {
         String email = extractEmailFrom(token);
         Optional<User> user = userRepository.findByEmail(email);
-        User foundUser = user.orElseThrow(() ->new UserNotFoundException("user not found"));
+        User foundUser = user.orElseThrow(() ->new UserNotFoundException(
+                String.format(ExceptionMessage.USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(),email)));
         foundUser.setActive(true);
         User savedUser = userRepository.save(foundUser);
         GetUserResponse userResponse = buildGetUserResponse(savedUser);
