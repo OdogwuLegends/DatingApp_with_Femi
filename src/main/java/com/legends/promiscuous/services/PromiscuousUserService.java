@@ -8,16 +8,17 @@ import com.legends.promiscuous.dtos.response.ActivateAccountResponse;
 import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
-import com.legends.promiscuous.exceptions.PromiscuousBaseException;
+import com.legends.promiscuous.exceptions.AccountActivationFailedException;
+import com.legends.promiscuous.exceptions.UserNotFoundException;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.legends.promiscuous.utils.AppUtils.*;
 
@@ -56,38 +57,48 @@ public class PromiscuousUserService implements UserService{
     @Override
     public ApiResponse<?> activateUserAccount(String token) {
         boolean isTestToken = token.equals(appConfig.getTestToken());
-        if(isTestToken){
-            ApiResponse<?> activateAccountResponse =
-                    ApiResponse.builder()
-//                    .data(new ActivateAccountResponse("Account activation successful",))
-                    .build();
-            return activateAccountResponse;
-        }
+        if(isTestToken) return getApiResponse();
 
         boolean isValidJwtToken = validateToken(token);
         if(isValidJwtToken){
             String email = extractEmailFrom(token);
-            User foundUser = userRepository.findByEmail(email).orElseThrow();
+            Optional<User> user = userRepository.findByEmail(email);
+            User foundUser = user.orElseThrow(()-> new UserNotFoundException("User not found"));
             foundUser.setActive(true);
             User savedUser = userRepository.save(foundUser);
-            GetUserResponse userResponse = GetUserResponse.builder()
-                    .id(savedUser.getId())
-                    .address(savedUser.getAddress().toString())
-                    .fullName(savedUser.getFirstName() + " "+savedUser.getLastName())
-                    .email(savedUser.getEmail())
-                    .phoneNumber(savedUser.getPhoneNumber())
-                    .build();
-            var activateUserResponse = ActivateAccountResponse.builder()
-                    .message("Account activation successful")
-                    .user(userResponse)
-                    .build();
-            ApiResponse<?> activateAccountResponse =
-                    ApiResponse.builder()
-                            .data(activateUserResponse)
-                            .build();
-            return activateAccountResponse;
+            GetUserResponse userResponse = buildGetUserResponse(savedUser);
+            var activateUserResponse = buildActivateUserResponse(userResponse);
+            return ApiResponse.builder().data(activateUserResponse).build();
         }
-        throw  new PromiscuousBaseException("Account activation was not successful");
+        throw  new AccountActivationFailedException("Account activation was not successful");
+    }
+
+    private static GetUserResponse buildGetUserResponse(User savedUser) {
+        return GetUserResponse.builder()
+                .id(savedUser.getId())
+                .address(savedUser.getAddress().toString())
+                .fullName(getFullName(savedUser))
+                .email(savedUser.getEmail())
+                .phoneNumber(savedUser.getPhoneNumber())
+                .build();
+    }
+
+    private static String getFullName(User savedUser) {
+        return savedUser.getFirstName() + " " + savedUser.getLastName();
+    }
+
+    private static ActivateAccountResponse buildActivateUserResponse(GetUserResponse userResponse) {
+        return ActivateAccountResponse.builder()
+                .message("Account activation successful")
+                .user(userResponse)
+                .build();
+    }
+
+    private static ApiResponse<?> getApiResponse() {
+        ApiResponse<?> activateAccountResponse =
+                ApiResponse.builder()
+                .build();
+        return activateAccountResponse;
     }
 
     private EmailNotificationRequest buildEmailRequest(User savedUser) {
