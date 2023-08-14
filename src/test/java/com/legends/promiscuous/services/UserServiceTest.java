@@ -4,7 +4,6 @@ import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
-import com.legends.promiscuous.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,37 @@ public class UserServiceTest {
     }
     @Test
     public void getAllUsers(){
-        List<User> users = userService.getAllUsers(1,5);
+        registerTestUsers();
+        List<GetUserResponse> users = userService.getAllUsers(1,5);
+        assertThat(users).isNotNull();
+        assertThat(users.size()).isEqualTo(5);
+    }
+
+    private void registerTestUsers() {
+        RegisterUserRequest firstRequest = new RegisterUserRequest();
+        firstRequest.setEmail("john@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
+        firstRequest.setEmail("jane@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
+        firstRequest.setEmail("jerry@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
+        firstRequest.setEmail("johnny@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
+        firstRequest.setEmail("jeoy@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
+        firstRequest.setEmail("zaza@gmail.com");
+        firstRequest.setPassword("password");
+        userService.register(firstRequest);
+
     }
 }

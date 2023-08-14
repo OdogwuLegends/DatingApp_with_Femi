@@ -15,5 +15,5 @@ public interface UserService {
 
     GetUserResponse getUserById(long id);
 
-    List<User> getAllUsers(int page, int pageSize);
+    List<GetUserResponse> getAllUsers(int page, int pageSize);
 }

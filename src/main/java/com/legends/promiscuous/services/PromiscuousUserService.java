@@ -77,6 +77,11 @@ public class PromiscuousUserService implements UserService{
         return getUserResponse;
     }
 
+    @Override
+    public List<GetUserResponse> getAllUsers(int page, int pageSize) {
+        return null;
+    }
+
     private ApiResponse<?> activateAccount(String token) {
         String email = extractEmailFrom(token);
         Optional<User> user = userRepository.findByEmail(email);
