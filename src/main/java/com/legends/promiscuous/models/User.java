@@ -33,7 +33,7 @@ public class User {
     @Column(unique = true)
     private String phoneNumber;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Address address;
 
     @Enumerated(value = EnumType.STRING)
