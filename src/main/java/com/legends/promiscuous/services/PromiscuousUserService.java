@@ -8,12 +8,14 @@ import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
 import com.legends.promiscuous.exceptions.ExceptionMessage;
 import com.legends.promiscuous.exceptions.UserNotFoundException;
+import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +42,8 @@ public class PromiscuousUserService implements UserService{
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
+//        user.setAddress();
+        user.setCreatedAt(LocalDateTime.now());
         //3. save that users profile in the Database
         User savedUser = userRepository.save(user);
         log.info("saved guy-->{}", savedUser);
@@ -97,7 +101,7 @@ public class PromiscuousUserService implements UserService{
     private static GetUserResponse buildGetUserResponse(User savedUser) {
         return GetUserResponse.builder()
                 .id(savedUser.getId())
-//                .address(savedUser.getAddress().toString())
+                .address(savedUser.getAddress().toString())
                 .fullName(getFullName(savedUser))
                 .phoneNumber(savedUser.getPhoneNumber())
                 .email(savedUser.getEmail())
