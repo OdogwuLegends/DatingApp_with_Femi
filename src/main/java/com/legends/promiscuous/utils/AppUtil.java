@@ -17,13 +17,11 @@ public class AppUtil {
     private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\main\\resources\\templates\\index (4).html";
     public static final String BLANK_SPACE =  " ";
     public static final String EMPTY_STRING = "";
-    private static final String ACTIVATE_ACCOUNT_PATH = "localhost"
-    public static String generateActivationLink(String email){
+    private static final String ACTIVATE_ACCOUNT_PATH = "/user/activate?code=";
 
-
+    public static String generateActivationLink(String baseUrl,String email){
         String token = generateToken(email);
-
-        String activationLink = ACTIVATE_ACCOUNT_PATH + token;
+        String activationLink = baseUrl + ACTIVATE_ACCOUNT_PATH + token;
         return activationLink;
     }
 

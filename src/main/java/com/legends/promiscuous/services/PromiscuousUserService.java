@@ -114,7 +114,7 @@ public class PromiscuousUserService implements UserService{
         recipients.add(recipient);
         request.setRecipients(recipients);
         request.setSubject(WELCOME_MAIL_SUBJECT);
-        String activationLink = generateActivationLink(savedUser.getEmail());
+        String activationLink = generateActivationLink(appConfig.getBaseUrl(), savedUser.getEmail());
         String emailTemplate = getMailTemplate();
 
         String mailContent = String.format(emailTemplate, activationLink);
