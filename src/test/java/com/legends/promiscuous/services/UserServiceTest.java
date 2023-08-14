@@ -2,6 +2,7 @@ package com.legends.promiscuous.services;
 
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.ApiResponse;
+import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,8 @@ public class UserServiceTest {
     @Test
     public void getUserByIdTest(){
         userService.register(registerUserRequest);
-        userService.getUserById(1L);
+        GetUserResponse response = userService.getUserById(1L);
+        assertThat(response).isNotNull();
+        assertThat(response.getEmail()).isEqualTo(registerUserRequest.getEmail());
     }
 }

@@ -65,6 +65,11 @@ public class PromiscuousUserService implements UserService{
         throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
     }
 
+    @Override
+    public GetUserResponse getUserById(long id) {
+        return null;
+    }
+
     private ApiResponse<?> activateAccount(String token) {
         String email = extractEmailFrom(token);
         Optional<User> user = userRepository.findByEmail(email);
