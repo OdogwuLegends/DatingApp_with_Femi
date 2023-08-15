@@ -4,7 +4,8 @@ import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
-import org.junit.jupiter.api.BeforeEach;
+import com.legends.promiscuous.repositories.AddressRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UserServiceTest {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AddressRepository addressRepository;
+
+//    @AfterEach
+//    void tearDown(){
+//        userService.deleteAll();
+//        addressRepository.deleteAll();
+//    }
 //    private RegisterUserRequest registerUserRequest;
 //    private RegisterUserResponse registerUserResponse;
 
@@ -67,11 +76,17 @@ public class UserServiceTest {
 //        assertThat(response).isNotNull();
 //        assertThat(response.getEmail()).isEqualTo(registerUserRequest.getEmail());
 
-        
+        GetUserResponse response = userService.getUserById(500L);
+        assertThat(response).isNotNull();
     }
     @Test
     public void getAllUsers(){
-        registerTestUsers();
+//        registerTestUsers();
+//        List<GetUserResponse> users = userService.getAllUsers(1,5);
+//        assertThat(users).isNotNull();
+//        assertThat(users.size()).isEqualTo(5);
+
+
         List<GetUserResponse> users = userService.getAllUsers(1,5);
         assertThat(users).isNotNull();
         assertThat(users.size()).isEqualTo(5);
