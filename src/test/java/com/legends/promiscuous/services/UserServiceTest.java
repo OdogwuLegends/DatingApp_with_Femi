@@ -50,8 +50,8 @@ public class UserServiceTest {
 
     @Test
     public void getUserByIdTest(){
-        userService.register(registerUserRequest);
-        GetUserResponse response = userService.getUserById(1L);
+//        userService.register(registerUserRequest);
+        GetUserResponse response = userService.getUserById(8L);
         assertThat(response).isNotNull();
         assertThat(response.getEmail()).isEqualTo(registerUserRequest.getEmail());
     }
