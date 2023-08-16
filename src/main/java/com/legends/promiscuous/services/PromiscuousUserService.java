@@ -1,5 +1,6 @@
 package com.legends.promiscuous.services;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,11 +131,20 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
-
-
+        User user = findUserById(id);
+        JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
         return null;
     }
 
+    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
+        
+    }
+
+    private User findUserById(Long id){
+        Optional<User> foundUser = userRepository.findById(id);
+        User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
+        return user;
+    }
 
     private Pageable buildPageRequest(int page, int pageSize) {
         if(page < 1 && pageSize < 1) return PageRequest.of(0, 10);
