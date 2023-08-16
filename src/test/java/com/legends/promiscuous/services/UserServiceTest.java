@@ -8,15 +8,18 @@ import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.LoginResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.exceptions.BadCredentialsException;
+import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.repositories.AddressRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -133,13 +136,13 @@ public class UserServiceTest {
     }
 
     private MultipartFile getTestImage(){
+        Path path = Paths.get("C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\airplane_cartoon.png");
 
-        try {
-            Path path = Paths.get("C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\airplane_cartoon.png");
-            BufferedReader reader = Files.newBufferedReader(path);
-
+        try (BufferedReader reader = Files.newBufferedReader(path)){
+            FileInputStream inputStream = new
+          MultipartFile image = new MockMultipartFile("test_image",reader.);
         } catch (Exception exception){
-            System.err.println(exception.getMessage());
+            throw new PromiscuousBaseException(exception.getMessage());
         }
     }
 
