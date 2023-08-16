@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -136,11 +137,12 @@ public class UserServiceTest {
     }
 
     private MultipartFile getTestImage(){
+        //obtain a path that points to the image
         Path path = Paths.get("C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\airplane_cartoon.png");
 
-        try (BufferedReader reader = Files.newBufferedReader(path)){
-            FileInputStream inputStream = new
-          MultipartFile image = new MockMultipartFile("test_image",reader.);
+        try (var inputStream = Files.newInputStream(path)){
+            MultipartFile image = new MockMultipartFile("test_image",inputStream);
+          return image;
         } catch (Exception exception){
             throw new PromiscuousBaseException(exception.getMessage());
         }
