@@ -18,26 +18,25 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<RegisterUserResponse> register(@RequestBody RegisterUserRequest request){
         RegisterUserResponse response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/findById")
-    public ResponseEntity<GetUserResponse> getUserById(@RequestBody FindUserRequest request){
-        long id = request.getId();
-        GetUserResponse response = userService.getUserById(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(response);
-    }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<GetUserResponse> getUserById(@PathVariable Long id){
+//    @GetMapping("/findById")
+//    public ResponseEntity<GetUserResponse> getUserById(@RequestBody FindUserRequest request){
+//        long id = request.getId();
 //        GetUserResponse response = userService.getUserById(id);
-//        return ResponseEntity.ok().body(response);
+//        return ResponseEntity.status(HttpStatus.FOUND).body(response);
 //    }
+    @GetMapping("/{id}")
+    public ResponseEntity<GetUserResponse> getUserById(@PathVariable Long id){
+        GetUserResponse response = userService.getUserById(id);
+        return ResponseEntity.ok().body(response);
+    }
     @GetMapping("/getAllUsers")
     public ResponseEntity<List<GetUserResponse>> getAllUser(@RequestBody FindUserRequest request){
         int page = request.getPage();
