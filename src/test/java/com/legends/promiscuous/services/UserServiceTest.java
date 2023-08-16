@@ -6,8 +6,8 @@ import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.LoginResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
+import com.legends.promiscuous.exceptions.BadCredentialsException;
 import com.legends.promiscuous.repositories.AddressRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
@@ -97,12 +98,21 @@ public class UserServiceTest {
     @Test
     public void testThatUsersCanLogin(){
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("ename@gmail.com");
+        loginRequest.setEmail("test1@email.com");
         loginRequest.setPassword("password");
         LoginResponse response = userService.login(loginRequest);
         assertThat(response).isNotNull();
         String token = response.getAccessToken();
         assertThat(token).isNotNull();
+    }
+
+    @Test
+    public void testThatExceptionIsThrownWhenUserAuthenticatesWithBadCredentials(){
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("test1@email.com");
+        loginRequest.setPassword("bad_password");
+
+        assertThatThrownBy(()->userService.login(loginRequest)).isInstanceOf(BadCredentialsException.class);
     }
 
 //    private void registerTestUsers() {
