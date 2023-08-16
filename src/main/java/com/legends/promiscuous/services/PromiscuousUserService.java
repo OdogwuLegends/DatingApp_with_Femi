@@ -162,6 +162,7 @@ public class PromiscuousUserService implements UserService{
     }
 
     private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
+        JsonPatch patch;
        Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
         List<Field> fieldsToUpdate =  Arrays.stream(fields)
@@ -176,7 +177,8 @@ public class PromiscuousUserService implements UserService{
                 TextNode node = new TextNode(value);
                 ReplaceOperation operation = new ReplaceOperation(pointer, node);
                 operations.add(operation);
-                JsonPatch patch = new JsonPatch(operations);
+                patch = new JsonPatch(operations);
+                return
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
