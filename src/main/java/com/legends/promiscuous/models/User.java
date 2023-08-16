@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Entity
@@ -47,12 +48,14 @@ public class User {
     private Set<Interest> interests;
 
     private boolean isActive;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
 
     @PrePersist
     public void setCreatedAt(){
-        createdAt = LocalDateTime.now();
+        var currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        createdAt = currentTime.format(formatter);
     }
 
 }
