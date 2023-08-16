@@ -2,6 +2,7 @@ package com.legends.promiscuous.services;
 
 import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
+import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
 import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.LoginResponse;
@@ -113,6 +114,12 @@ public class UserServiceTest {
         loginRequest.setPassword("bad_password");
 
         assertThatThrownBy(()->userService.login(loginRequest)).isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    public void testThatUserCanUpdateAccount(){
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
+        
     }
 
 //    private void registerTestUsers() {

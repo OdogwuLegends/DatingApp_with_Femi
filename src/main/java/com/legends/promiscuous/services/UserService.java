@@ -6,7 +6,6 @@ import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.LoginResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
-import com.legends.promiscuous.models.User;
 
 import java.util.List;
 
@@ -16,6 +15,8 @@ public interface UserService {
     LoginResponse login(LoginRequest loginRequest);
 
     ApiResponse<?> activateUserAccount(String token);
+
+
 
     GetUserResponse getUserById(long id);
 
