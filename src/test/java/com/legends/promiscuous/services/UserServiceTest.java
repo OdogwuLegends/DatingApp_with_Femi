@@ -1,8 +1,10 @@
 package com.legends.promiscuous.services;
 
+import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.ApiResponse;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
+import com.legends.promiscuous.dtos.response.LoginResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.repositories.AddressRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -90,6 +92,17 @@ public class UserServiceTest {
         List<GetUserResponse> users = userService.getAllUsers(1,5);
         assertThat(users).isNotNull();
         assertThat(users.size()).isEqualTo(5);
+    }
+
+    @Test
+    public void testThatUsersCanLogin(){
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("ename@gmail.com");
+        loginRequest.setPassword("password");
+        LoginResponse response = userService.login(loginRequest);
+        assertThat(response).isNotNull();
+        String token = response.getAccessToken();
+        assertThat(token).isNotNull();
     }
 
 //    private void registerTestUsers() {

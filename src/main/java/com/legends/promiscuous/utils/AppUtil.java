@@ -25,6 +25,9 @@ public class AppUtil {
         return activationLink;
     }
 
+    public static boolean matches(String first, String second){
+        return first.equals(second);
+    }
 
     public static String getMailTemplate(){
         Path templateLocation = Paths.get(MAIL_TEMPLATE_LOCATION);

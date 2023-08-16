@@ -2,15 +2,18 @@ package com.legends.promiscuous.services;
 
 import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.EmailNotificationRequest;
+import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.Recipient;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
+import com.legends.promiscuous.exceptions.BadCredentialsException;
 import com.legends.promiscuous.exceptions.ExceptionMessage;
 import com.legends.promiscuous.exceptions.UserNotFoundException;
 import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
+import com.legends.promiscuous.utils.AppUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,10 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_NOT_FOUND_EXCEPTION;
+import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
-import static com.legends.promiscuous.utils.JwtUtil.extractEmailFrom;
-import static com.legends.promiscuous.utils.JwtUtil.validateToken;
+import static com.legends.promiscuous.utils.JwtUtil.*;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +63,26 @@ public class PromiscuousUserService implements UserService{
 
         return registerUserResponse;
     }
+
+    @Override
+    public LoginResponse login(LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        Optional<User> foundUser = userRepository.findByEmail(email);
+        User user = foundUser.orElseThrow(()-> new UserNotFoundException(
+                String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(), email)
+        ));
+        boolean isValidPassword = AppUtil.matches(user.getPassword(),password);
+        if(isValidPassword){
+            String accessToken = generateToken(email);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setAccessToken(accessToken);
+            return loginResponse;
+        }
+        throw new BadCredentialsException(INVALID_CREDENTIALS_EXCEPTION.getMessage());
+    }
+
 
     @Override
     public ApiResponse<?> activateUserAccount(String token) {
@@ -119,7 +141,7 @@ public class PromiscuousUserService implements UserService{
         String email = extractEmailFrom(token);
         Optional<User> user = userRepository.findByEmail(email);
         User foundUser = user.orElseThrow(() ->new UserNotFoundException(
-                String.format(ExceptionMessage.USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(),email)));
+                String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(),email)));
         foundUser.setActive(true);
         User savedUser = userRepository.save(foundUser);
         GetUserResponse userResponse = buildGetUserResponse(savedUser);
