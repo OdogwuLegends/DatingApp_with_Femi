@@ -1,16 +1,15 @@
 package com.legends.promiscuous.models;
 
 import com.legends.promiscuous.enums.Gender;
+import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Entity
 @Table(name = "users_table")
@@ -43,6 +42,9 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @ElementCollection()
+    private Set<Interest> interests;
 
     private boolean isActive;
     private LocalDateTime createdAt;
