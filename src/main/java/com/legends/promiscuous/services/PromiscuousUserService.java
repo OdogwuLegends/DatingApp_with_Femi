@@ -177,8 +177,8 @@ public class PromiscuousUserService implements UserService{
                 TextNode node = new TextNode(value);
                 ReplaceOperation operation = new ReplaceOperation(pointer, node);
                 operations.add(operation);
-                patch = new JsonPatch(operations);
-                return
+
+                
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
