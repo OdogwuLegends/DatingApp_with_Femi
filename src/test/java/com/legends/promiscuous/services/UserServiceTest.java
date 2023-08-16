@@ -124,7 +124,7 @@ public class UserServiceTest {
         updateUserRequest.setId(500L);
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
-        updateUserRequest.setProfileImage();
+//        updateUserRequest.setProfileImage();
     }
 
 //    private void registerTestUsers() {
