@@ -141,11 +141,13 @@ public class PromiscuousUserService implements UserService{
 
         try {
             JsonNode updatedNode = jsonPatch.apply(node);
-            User  updatedUser = mapper.convertValue(updatedNode,User.class);
-            updatedUser = userRepository.save(updatedUser);
+            User updatedUser = mapper.convertValue(updatedNode,User.class);
+            userRepository.save(updatedUser);
             UpdateUserResponse response = new UpdateUserResponse();
+            response.setMessage("Update Successful");
+            return response;
         } catch (JsonPatchException exception){
-            throw new PromiscuousBaseException("");
+            throw new PromiscuousBaseException(":(");
         }
     }
 
