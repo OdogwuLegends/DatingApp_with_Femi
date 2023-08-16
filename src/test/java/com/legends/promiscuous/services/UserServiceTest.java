@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,7 +121,9 @@ public class UserServiceTest {
     @Test
     public void testThatUserCanUpdateAccount(){
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        
+        updateUserRequest.setId(500L);
+        updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
+        updateUserRequest.setFirstName("Sheriff");
     }
 
 //    private void registerTestUsers() {
