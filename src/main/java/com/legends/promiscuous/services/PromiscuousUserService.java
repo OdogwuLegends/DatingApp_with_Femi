@@ -133,23 +133,23 @@ public class PromiscuousUserService implements UserService{
     public void deleteAll() {
         userRepository.deleteAll();
     }
-    @Override
-    public UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id){
-        ObjectMapper mapper = new ObjectMapper();
-        User user = findUserById(id);
-        JsonNode node = mapper.convertValue(user, JsonNode.class);
-
-        try {
-            JsonNode updatedNode = jsonPatch.apply(node);
-            User updatedUser = mapper.convertValue(updatedNode,User.class);
-            userRepository.save(updatedUser);
-            UpdateUserResponse response = new UpdateUserResponse();
-            response.setMessage("Update Successful");
-            return response;
-        } catch (JsonPatchException exception){
-            throw new PromiscuousBaseException(":(");
-        }
-    }
+//    @Override
+//    public UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id){
+//        ObjectMapper mapper = new ObjectMapper();
+//        User user = findUserById(id);
+//        JsonNode node = mapper.convertValue(user, JsonNode.class);
+//
+//        try {
+//            JsonNode updatedNode = jsonPatch.apply(node);
+//            User updatedUser = mapper.convertValue(updatedNode,User.class);
+//            userRepository.save(updatedUser);
+//            UpdateUserResponse response = new UpdateUserResponse();
+//            response.setMessage("Update Successful");
+//            return response;
+//        } catch (JsonPatchException exception){
+//            throw new PromiscuousBaseException(":(");
+//        }
+//    }
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
@@ -158,16 +158,17 @@ public class PromiscuousUserService implements UserService{
         return null;
     }
 
-//    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
-//        try {
-//            List<JsonPatchOperation> operations = List.of(
-//                    new ReplaceOperation(new JsonPointer("/firstname"), new TextNode("Joey"))
-//
-//            );
-//        }catch (JsonPointerException exception){
-//
-//        }
-//    }
+    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
+        try {
+            List<JsonPatchOperation> operations = List.of(
+                    new ReplaceOperation(new JsonPointer("/firstname"), new TextNode("Joey"))
+
+            );
+            JsonPatch patch = new JsonPatch(operations);
+        }catch (JsonPointerException exception){
+
+        }
+    }
 
     private User findUserById(Long id){
         Optional<User> foundUser = userRepository.findById(id);

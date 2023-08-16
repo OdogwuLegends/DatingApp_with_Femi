@@ -44,9 +44,9 @@ public class UserController {
         List<GetUserResponse> response = userService.getAllUsers(page,pageSize);
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<UpdateUserResponse> updateUserAccount(@RequestBody JsonPatch jsonPatch, @PathVariable Long id){
-        UpdateUserResponse response = userService.updateUserProfile(jsonPatch,id);
-        return ResponseEntity.ok(response);
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<UpdateUserResponse> updateUserAccount(@RequestBody JsonPatch jsonPatch, @PathVariable Long id){
+//        UpdateUserResponse response = userService.updateUserProfile(jsonPatch,id);
+//        return ResponseEntity.ok(response);
+//    }
 }

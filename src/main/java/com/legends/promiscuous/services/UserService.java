@@ -18,10 +18,8 @@ public interface UserService {
     GetUserResponse getUserById(long id);
 
     List<GetUserResponse> getAllUsers(int page, int pageSize);
-
     void deleteAll();
-
     UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id);
 
-    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
+//    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
 }
