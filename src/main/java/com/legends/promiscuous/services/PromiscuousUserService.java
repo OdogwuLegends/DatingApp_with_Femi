@@ -130,7 +130,9 @@ public class PromiscuousUserService implements UserService{
     }
 
     @Override
-    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest) {
+    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
+
+
         return null;
     }
 

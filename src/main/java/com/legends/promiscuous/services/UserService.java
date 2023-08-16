@@ -20,5 +20,5 @@ public interface UserService {
 
     void deleteAll();
 
-    UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest);
+    UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id);
 }

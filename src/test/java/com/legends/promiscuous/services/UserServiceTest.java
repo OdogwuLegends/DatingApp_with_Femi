@@ -125,24 +125,33 @@ public class UserServiceTest {
 
     @Test
     public void testThatUserCanUpdateAccount(){
+        UpdateUserRequest updateUserRequest = buildUpdateRequest();
+
+        UpdateUserResponse response = userService.updateProfile(updateUserRequest, 500L);
+
+        assertThat(response).isNotNull();
+        GetUserResponse userResponse = userService.getUserById(500L);
+
+        String fullName = userResponse.getFullName();
+        String expectedFullName = new StringBuilder()
+                .append(updateUserRequest.getFirstName())
+                .append(BLANK_SPACE)
+                .append(updateUserRequest.getLastName()).toString();
+
+        assertThat(fullName).isEqualTo(expectedFullName);
+
+    }
+
+    private UpdateUserRequest buildUpdateRequest() {
         Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        updateUserRequest.setId(500L);
+        UpdateUserRequest updateUserRequest =  new UpdateUserRequest();
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
         updateUserRequest.setLastName("Awofiranye");
         MultipartFile testImage = getTestImage();
         updateUserRequest.setProfileImage(testImage);
         updateUserRequest.setInterests(interests);
-
-        UpdateUserResponse response = userService.updateProfile(updateUserRequest);
-
-        assertThat(response).isNotNull();
-        GetUserResponse userResponse = userService.getUserById(500L);
-
-        String fullName = userResponse.getFullName();
-        assertThat(fullName).isEqualTo(updateUserRequest.getFirstName()+BLANK_SPACE+updateUserRequest.getLastName());
-
+        return updateUserRequest;
     }
 
     private MultipartFile getTestImage(){
