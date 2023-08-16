@@ -1,13 +1,18 @@
 package com.legends.promiscuous.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.JsonPatchOperation;
+import com.github.fge.jsonpatch.ReplaceOperation;
 import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
-import com.legends.promiscuous.exceptions.AccountActivationFailedException;
-import com.legends.promiscuous.exceptions.BadCredentialsException;
-import com.legends.promiscuous.exceptions.ExceptionMessage;
-import com.legends.promiscuous.exceptions.UserNotFoundException;
+import com.legends.promiscuous.exceptions.*;
 import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
@@ -128,17 +133,39 @@ public class PromiscuousUserService implements UserService{
     public void deleteAll() {
         userRepository.deleteAll();
     }
+    @Override
+    public UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id){
+        ObjectMapper mapper = new ObjectMapper();
+        User user = findUserById(id);
+        JsonNode node = mapper.convertValue(user, JsonNode.class);
+
+        try {
+            JsonNode updatedNode = jsonPatch.apply(node);
+            User  updatedUser = mapper.convertValue(updatedNode,User.class);
+            updatedUser = userRepository.save(updatedUser);
+            UpdateUserResponse response = new UpdateUserResponse();
+        } catch (JsonPatchException exception){
+            throw new PromiscuousBaseException("");
+        }
+    }
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
         User user = findUserById(id);
-        JsonPatch jsonPatch = buildUpdatePatch(updateUserRequest);
+
         return null;
     }
 
-    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
-        
-    }
+//    private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
+//        try {
+//            List<JsonPatchOperation> operations = List.of(
+//                    new ReplaceOperation(new JsonPointer("/firstname"), new TextNode("Joey"))
+//
+//            );
+//        }catch (JsonPointerException exception){
+//
+//        }
+//    }
 
     private User findUserById(Long id){
         Optional<User> foundUser = userRepository.findById(id);

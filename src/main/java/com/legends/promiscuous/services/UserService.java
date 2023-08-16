@@ -1,5 +1,6 @@
 package com.legends.promiscuous.services;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
@@ -21,4 +22,6 @@ public interface UserService {
     void deleteAll();
 
     UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id);
+
+    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
 }
