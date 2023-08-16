@@ -25,9 +25,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
@@ -159,11 +162,16 @@ public class PromiscuousUserService implements UserService{
     }
 
     private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
-        try {
-            List<JsonPatchOperation> operations = List.of(
-                    new ReplaceOperation(new JsonPointer("/firstname"), new TextNode("Joey"))
+       Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
-            );
+        List<Field> fieldsToUpdate =  Arrays.stream(fields)
+                .filter(field -> field != null)
+                .toList();
+
+        fieldsToUpdate.forEach(field ->{});
+
+        try{
+
             JsonPatch patch = new JsonPatch(operations);
         }catch (JsonPointerException exception){
 
