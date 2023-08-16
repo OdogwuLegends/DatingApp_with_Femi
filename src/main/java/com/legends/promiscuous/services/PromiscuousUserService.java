@@ -163,26 +163,27 @@ public class PromiscuousUserService implements UserService{
 
     private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
         JsonPatch patch;
-       Field[] fields = updateUserRequest.getClass().getDeclaredFields();
+        Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
-        List<Field> fieldsToUpdate =  Arrays.stream(fields)
+
+        List<ReplaceOperation> operations = Arrays.stream(fields)
                 .filter(field -> field != null)
-                .toList();
-        List<JsonPatchOperation> operations = new ArrayList<>();
-        fieldsToUpdate.forEach(field ->{
-            try {
-                String path = "/"+field.getName();
-                JsonPointer pointer = new JsonPointer(path);
-                String value = field.get(field.getName()).toString();
-                TextNode node = new TextNode(value);
-                ReplaceOperation operation = new ReplaceOperation(pointer, node);
-                operations.add(operation);
+                .map(field -> field -> {
+                    try {
+                        String path = "/" + field.getName();
+                        JsonPointer pointer = new JsonPointer(path);
+                        String value = field.get(field.getName()).toString();
+                        TextNode node = new TextNode(value);
+                        ReplaceOperation operation = new ReplaceOperation(pointer, node);
+                        operations.add(operation);
 
-                
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }).
+
+
+
 
     }
 
