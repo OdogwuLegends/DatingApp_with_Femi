@@ -168,7 +168,9 @@ public class PromiscuousUserService implements UserService{
                 .filter(field -> field != null)
                 .toList();
 
-        fieldsToUpdate.forEach(field ->{});
+        fieldsToUpdate.forEach(field ->{
+            JsonPointer pointer = new JsonPointer("/")
+        });
 
         try{
 
