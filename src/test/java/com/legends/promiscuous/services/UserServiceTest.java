@@ -23,6 +23,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.Set;
 
+import static com.legends.promiscuous.utils.AppUtil.BLANK_SPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -129,11 +130,19 @@ public class UserServiceTest {
         updateUserRequest.setId(500L);
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
+        updateUserRequest.setLastName("Awofiranye");
         MultipartFile testImage = getTestImage();
         updateUserRequest.setProfileImage(testImage);
         updateUserRequest.setInterests(interests);
 
         UpdateUserResponse response = userService.updateProfile(updateUserRequest);
+
+        assertThat(response).isNotNull();
+        GetUserResponse userResponse = userService.getUserById(500L);
+
+        String fullName = userResponse.getFullName();
+        assertThat(fullName).isEqualTo(updateUserRequest.getFirstName()+BLANK_SPACE+updateUserRequest.getLastName());
+
     }
 
     private MultipartFile getTestImage(){

@@ -1,10 +1,7 @@
 package com.legends.promiscuous.services;
 
 import com.legends.promiscuous.config.AppConfig;
-import com.legends.promiscuous.dtos.requests.EmailNotificationRequest;
-import com.legends.promiscuous.dtos.requests.LoginRequest;
-import com.legends.promiscuous.dtos.requests.Recipient;
-import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
+import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
 import com.legends.promiscuous.exceptions.BadCredentialsException;
@@ -130,6 +127,11 @@ public class PromiscuousUserService implements UserService{
     @Override
     public void deleteAll() {
         userRepository.deleteAll();
+    }
+
+    @Override
+    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest) {
+        return null;
     }
 
 

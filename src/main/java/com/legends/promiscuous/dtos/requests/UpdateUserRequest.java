@@ -14,6 +14,10 @@ public class UpdateUserRequest {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+    private String houseNumber;
+    private String street;
+    private String state;
+    private String country;
     private String password;
     private String phoneNumber;
     private String gender;
