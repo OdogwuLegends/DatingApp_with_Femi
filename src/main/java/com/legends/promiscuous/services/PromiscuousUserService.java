@@ -167,17 +167,21 @@ public class PromiscuousUserService implements UserService{
         List<Field> fieldsToUpdate =  Arrays.stream(fields)
                 .filter(field -> field != null)
                 .toList();
-
+        List<JsonPatchOperation> operations = new ArrayList<>();
         fieldsToUpdate.forEach(field ->{
-            JsonPointer pointer = new JsonPointer("/")
+            try {
+                String path = "/"+field.getName();
+                JsonPointer pointer = new JsonPointer(path);
+                String value = field.get(field.getName()).toString();
+                TextNode node = new TextNode(value);
+                ReplaceOperation operation = new ReplaceOperation(pointer, node);
+                operations.add(operation);
+                JsonPatch patch = new JsonPatch(operations);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
 
-        try{
-
-            JsonPatch patch = new JsonPatch(operations);
-        }catch (JsonPointerException exception){
-
-        }
     }
 
     private User findUserById(Long id){
