@@ -14,7 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -124,7 +129,18 @@ public class UserServiceTest {
         updateUserRequest.setId(500L);
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
-//        updateUserRequest.setProfileImage();
+        updateUserRequest.setProfileImage();
+    }
+
+    private MultipartFile getTestImage(){
+
+        try {
+            Path path = Paths.get("C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\airplane_cartoon.png");
+            BufferedReader reader = Files.newBufferedReader(path);
+
+        } catch (Exception exception){
+            System.err.println(exception.getMessage());
+        }
     }
 
 //    private void registerTestUsers() {
