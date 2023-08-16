@@ -3,10 +3,7 @@ package com.legends.promiscuous.services;
 import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
-import com.legends.promiscuous.dtos.response.ApiResponse;
-import com.legends.promiscuous.dtos.response.GetUserResponse;
-import com.legends.promiscuous.dtos.response.LoginResponse;
-import com.legends.promiscuous.dtos.response.RegisterUserResponse;
+import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.exceptions.BadCredentialsException;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.repositories.AddressRepository;
@@ -18,15 +15,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -129,18 +124,24 @@ public class UserServiceTest {
 
     @Test
     public void testThatUserCanUpdateAccount(){
+        Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setId(500L);
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
-        updateUserRequest.setProfileImage();
+        MultipartFile testImage = getTestImage();
+        updateUserRequest.setProfileImage(testImage);
+        updateUserRequest.setInterests(interests);
+
+        UpdateUserResponse response = userService.updateProfile(updateUserRequest);
     }
 
     private MultipartFile getTestImage(){
         //obtain a path that points to the image
         Path path = Paths.get("C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\airplane_cartoon.png");
-
+        //create stream that can read bytes from file pointed to by path
         try (var inputStream = Files.newInputStream(path)){
+            //create a multipartFile using bytes from the inputStream obtained from the path
             MultipartFile image = new MockMultipartFile("test_image",inputStream);
           return image;
         } catch (Exception exception){
