@@ -73,14 +73,17 @@ public class PromiscuousUserService implements UserService{
         User user = foundUser.orElseThrow(()-> new UserNotFoundException(
                 String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(), email)
         ));
+        
         boolean isValidPassword = AppUtil.matches(user.getPassword(),password);
-        if(isValidPassword){
-            String accessToken = generateToken(email);
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setAccessToken(accessToken);
-            return loginResponse;
-        }
+        if(isValidPassword) return buildLoginResponse(email);
         throw new BadCredentialsException(INVALID_CREDENTIALS_EXCEPTION.getMessage());
+    }
+
+    private static LoginResponse buildLoginResponse(String email) {
+        String accessToken = generateToken(email);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setAccessToken(accessToken);
+        return loginResponse;
     }
 
 
