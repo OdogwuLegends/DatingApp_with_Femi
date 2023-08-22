@@ -15,6 +15,6 @@ public class CloudServiceTest{
 
     @Test
     void testUploadFile(){
-        MultipartFile file = new MockMultipartFile();
+        MultipartFile file = new MockMultipartFile("");
     }
 }
