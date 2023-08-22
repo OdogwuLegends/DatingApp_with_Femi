@@ -162,7 +162,7 @@ public class PromiscuousUserService implements UserService{
         user.setInterests(interests);
 
         Address userAddress = user.getAddress();
-        modelMapper.map(updateUserRequest, Address.class);
+        modelMapper.map(updateUserRequest, userAddress);
         user.setAddress(userAddress);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);

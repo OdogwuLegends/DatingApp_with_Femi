@@ -44,7 +44,7 @@ public class User {
     @Column(unique = true)
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     @Enumerated(value = EnumType.STRING)
