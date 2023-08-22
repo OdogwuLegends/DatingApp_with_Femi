@@ -19,6 +19,8 @@ public class AppUtil {
     public static final String EMPTY_STRING = "";
     private static final String ACTIVATE_ACCOUNT_PATH = "/user/activate?code=";
 
+    public static final String JSON_PATCH_PATH_PREFIX = "/";
+
     public static String generateActivationLink(String baseUrl,String email){
         String token = generateToken(email);
         String activationLink = baseUrl + ACTIVATE_ACCOUNT_PATH + token;

@@ -175,30 +175,35 @@ public class PromiscuousUserService implements UserService{
         Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
         List<ReplaceOperation> operations = Arrays.stream(fields)
-                .filter(field -> {
-                    try {
-                        field.setAccessible(true);
-                        return field.get(updateUserRequest)!=null;
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .map(field->{
-                    field.setAccessible(true);
-                    try {
-                        String path = "/"+field.getName();
-                        JsonPointer pointer = new JsonPointer(path);
-                        String value = field.get(updateUserRequest).toString();
-                        TextNode node = new TextNode(value);
-                        ReplaceOperation operation = new ReplaceOperation(pointer, node);
-                        return operation;
-                    } catch (Exception exception) {
-                        throw new RuntimeException(exception);
-                    }
-                }).toList();
+                                                    .filter(field -> isFieldWithValue(updateUserRequest, field))
+                                                    .map(field->buildReplaceOperation(updateUserRequest, field))
+                                                    .toList();
 
         List<JsonPatchOperation> patchOperations = new ArrayList<>(operations);
         return new JsonPatch(patchOperations);
+    }
+
+    private static boolean isFieldWithValue(UpdateUserRequest updateUserRequest, Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(updateUserRequest) != null;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static ReplaceOperation buildReplaceOperation(UpdateUserRequest updateUserRequest, Field field) {
+        field.setAccessible(true);
+        try {
+            String path = JSON_PATCH_PATH_PREFIX + field.getName();
+            JsonPointer pointer = new JsonPointer(path);
+            String value = field.get(updateUserRequest).toString();
+            TextNode node = new TextNode(value);
+            ReplaceOperation operation = new ReplaceOperation(pointer, node);
+            return operation;
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     private User findUserById(Long id){
