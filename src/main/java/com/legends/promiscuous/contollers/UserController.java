@@ -51,8 +51,9 @@ public class UserController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @PutMapping
-    public ResponseEntity<?> updateUserProfile(@ModelAttribute UpdateUserRequest updateUserRequest, @PathVariable Long id){
-        
+    @PutMapping("/{id}")
+    public ResponseEntity<UpdateUserResponse> updateUserProfile(@ModelAttribute UpdateUserRequest updateUserRequest, @PathVariable Long id){
+       UpdateUserResponse response =  userService.updateProfile(updateUserRequest,id);
+       return ResponseEntity.ok(response);
     }
 }
