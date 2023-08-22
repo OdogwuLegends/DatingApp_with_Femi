@@ -156,11 +156,19 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
-        ObjectMapper objectMapper = 
+        ObjectMapper objectMapper = new ObjectMapper();
         User user = findUserById(id);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
-
-        return null;
+        JsonNode userNode = objectMapper.convertValue(user, JsonNode.class);
+        try {
+            JsonNode updatedNode = updatePatch.apply(userNode);
+            User updatedUser = objectMapper.convertValue(updatedNode, User.class);
+            userRepository.save(updatedUser);
+            UpdateUserResponse updateUserResponse = new UpdateUserResponse("Profile Updated Successful");
+            return updateUserResponse;
+        }catch (JsonPatchException exception){
+            throw new PromiscuousBaseException(exception.getMessage());
+        }
     }
 
     private JsonPatch buildUpdatePatch(UpdateUserRequest updateUserRequest) {
