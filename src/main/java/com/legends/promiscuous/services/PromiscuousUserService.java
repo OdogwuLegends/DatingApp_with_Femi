@@ -158,9 +158,10 @@ public class PromiscuousUserService implements UserService{
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
         ModelMapper modelMapper = new ModelMapper();
-        uploadImage(updateUserRequest.getProfileImage());
+        String url =  uploadImage(updateUserRequest.getProfileImage());
 
         User user = findUserById(id);
+
         Set<String> userInterests = updateUserRequest.getInterests();
         Set<Interest> interests = parseInterestsFrom(userInterests);
         user.setInterests(interests);
@@ -172,9 +173,10 @@ public class PromiscuousUserService implements UserService{
         return applyPatch(updatePatch, user);
     }
 
-    private void uploadImage(MultipartFile newProfileImage) {
+    private String uploadImage(MultipartFile newProfileImage) {
         boolean isFormWithProfileImage = newProfileImage != null;
-        if(isFormWithProfileImage)cloudService.upload(newProfileImage);
+        if(isFormWithProfileImage) return cloudService.upload(newProfileImage);
+        throw new RuntimeException("Image upload failed");
     }
 
     private static Set<Interest> parseInterestsFrom(Set<String> interests){
