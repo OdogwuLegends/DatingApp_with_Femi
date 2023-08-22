@@ -14,6 +14,15 @@ public class AppConfig {
     @Value("${app.dev.token}")
     private String testToken;
 
+    @Value("${cloud.api.secret}")
+    private String cloudSecret;
+
+    @Value("${cloud.api.key}")
+    private String cloudKey;
+
+    @Value("${cloud.api.name}")
+    private String cloudName;
+
     public String getMailApiKey() {
         return mailApiKey;
     }
@@ -23,5 +32,18 @@ public class AppConfig {
     }
 
     public String getBaseUrl(){
-        return baseUrl; }
+        return baseUrl;
+    }
+
+    public String getCloudSecret() {
+        return cloudSecret;
+    }
+
+    public String getCloudKey() {
+        return cloudKey;
+    }
+
+    public String getCloudName() {
+        return cloudName;
+    }
 }
