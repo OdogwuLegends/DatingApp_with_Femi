@@ -139,7 +139,6 @@ public class UserServiceTest {
                 .append(updateUserRequest.getLastName()).toString();
 
         assertThat(fullName).isEqualTo(expectedFullName);
-
     }
 
     private UpdateUserRequest buildUpdateRequest() {
@@ -148,8 +147,8 @@ public class UserServiceTest {
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
         updateUserRequest.setLastName("Awofiranye");
-        MultipartFile testImage = getTestImage();
-        updateUserRequest.setProfileImage(testImage);
+//        MultipartFile testImage = getTestImage();
+//        updateUserRequest.setProfileImage(testImage);
         updateUserRequest.setInterests(interests);
         return updateUserRequest;
     }

@@ -178,6 +178,7 @@ public class PromiscuousUserService implements UserService{
                 .filter(field -> field!=null)
                 .map(field->{
                     try {
+                        field.setAccessible(true);
                         String path = "/"+field.getName();
                         JsonPointer pointer = new JsonPointer(path);
                         String value = field.get(updateUserRequest).toString();

@@ -1,11 +1,16 @@
 package com.legends.promiscuous.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.legends.promiscuous.enums.Gender;
 import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +27,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
+
+    
     private String firstName;
     private String lastName;
 
@@ -44,11 +53,13 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @ElementCollection()
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Interest> interests;
 
     private boolean isActive;
     private String createdAt;
+
+
 
 
     @PrePersist
