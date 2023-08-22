@@ -54,6 +54,7 @@ public class User {
     private Role role;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(value = EnumType.STRING)
     private Set<Interest> interests;
 
     private boolean isActive;

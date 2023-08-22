@@ -23,6 +23,5 @@ public class UpdateUserRequest {
     private String phoneNumber;
     private String gender;
     private Set<String> interests;
-//    private Set<Interest> interests;
     private MultipartFile profileImage;
 }
