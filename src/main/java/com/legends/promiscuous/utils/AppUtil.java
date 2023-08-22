@@ -15,6 +15,7 @@ public class AppUtil {
     public static final String APP_EMAIL = "noreply@promiscuous.africa";
     public static final String WELCOME_MAIL_SUBJECT = "Welcome to Promiscuous inc.";
     private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\main\\resources\\templates\\index (4).html";
+    public static final String TEST_IMG_LOCATION = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\stockphoto.jpg";
     public static final String BLANK_SPACE =  " ";
     public static final String EMPTY_STRING = "";
     private static final String ACTIVATE_ACCOUNT_PATH = "/user/activate?code=";
