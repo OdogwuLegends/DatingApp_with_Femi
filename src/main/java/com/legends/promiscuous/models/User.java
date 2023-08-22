@@ -54,7 +54,7 @@ public class User {
     private Role role;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> interests;
+    private Set<Interest> interests;
 
     private boolean isActive;
     private String createdAt;

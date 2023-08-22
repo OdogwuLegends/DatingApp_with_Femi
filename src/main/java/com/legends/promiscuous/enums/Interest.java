@@ -8,7 +8,4 @@ public enum Interest {
     SWIMMING, READING,
     SINGING, COOKING;
 
-//    public static Interest createInterest(@JsonProperty String interest){
-//
-//    }
 }

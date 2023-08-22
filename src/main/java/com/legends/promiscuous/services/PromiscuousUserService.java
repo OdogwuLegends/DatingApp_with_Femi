@@ -11,6 +11,7 @@ import com.github.fge.jsonpatch.ReplaceOperation;
 import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
+import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.exceptions.*;
 import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
@@ -25,10 +26,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
 import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
@@ -156,8 +155,19 @@ public class PromiscuousUserService implements UserService{
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
         User user = findUserById(id);
+        Set<String> userInterests = updateUserRequest.getInterests();
+        Set<Interest> interests = parseInterestsFrom(userInterests);
+        user.setInterests(interests);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);
+    }
+
+    private static Set<Interest> parseInterestsFrom(Set<String> interests){
+       Set<Interest> userInterests =  interests.stream()
+                                                .map(interest -> Interest.valueOf(interest.toUpperCase()))
+                                                .collect(Collectors.toSet());
+
+       return userInterests;
     }
 
     private UpdateUserResponse applyPatch(JsonPatch updatePatch, User user) {
@@ -192,7 +202,7 @@ public class PromiscuousUserService implements UserService{
     private static boolean isFieldWithValue(UpdateUserRequest updateUserRequest, Field field) {
         try {
             field.setAccessible(true);
-            return field.get(updateUserRequest) != null;
+            return field.get(updateUserRequest) != null || field.getName().equals("interests");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
