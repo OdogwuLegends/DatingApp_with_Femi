@@ -217,7 +217,7 @@ public class PromiscuousUserService implements UserService{
     }
 
     private static boolean validateFields(UpdateUserRequest updateUserRequest, Field field) {
-        List<String> list = List.of("interests","street","houseNumber","country","state", "gender");
+        List<String> list = List.of("interests","street","houseNumber","country","state", "gender","profileImage");
         field.setAccessible(true);
         try {
             return field.get(updateUserRequest) != null && !list.contains(field.getName());

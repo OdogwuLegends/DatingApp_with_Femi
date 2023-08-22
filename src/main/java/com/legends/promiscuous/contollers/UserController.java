@@ -3,6 +3,7 @@ package com.legends.promiscuous.contollers;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.legends.promiscuous.dtos.requests.FindUserRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
+import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
 import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.dtos.response.UpdateUserResponse;
@@ -49,4 +50,9 @@ public class UserController {
 //        UpdateUserResponse response = userService.updateUserProfile(jsonPatch,id);
 //        return ResponseEntity.ok(response);
 //    }
+
+    @PutMapping
+    public ResponseEntity<?> updateUserProfile(@ModelAttribute UpdateUserRequest updateUserRequest, @PathVariable Long id){
+        
+    }
 }

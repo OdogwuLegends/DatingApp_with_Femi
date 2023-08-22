@@ -150,10 +150,9 @@ public class UserServiceTest {
         updateUserRequest.setPassword("newPassword");
         updateUserRequest.setCountry("Egypt");
         updateUserRequest.setInterests(interests);
+        MultipartFile testImage = getTestImage();
+        updateUserRequest.setProfileImage(testImage);
 
-                //TODO: FIX THIS MESS
-//        MultipartFile testImage = getTestImage();
-//        updateUserRequest.setProfileImage(testImage);
         return updateUserRequest;
     }
 
