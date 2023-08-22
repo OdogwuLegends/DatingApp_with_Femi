@@ -150,10 +150,11 @@ public class UserServiceTest {
         updateUserRequest.setLastName("Awofiranye");
         updateUserRequest.setPassword("newPassword");
         updateUserRequest.setCountry("Nigeria");
+        updateUserRequest.setInterests(interests);
+        
                 //TODO: FIX THIS MESS
 //        MultipartFile testImage = getTestImage();
 //        updateUserRequest.setProfileImage(testImage);
-        updateUserRequest.setInterests(interests);
 //        updateUserRequest.setInterests(interests);
         return updateUserRequest;
     }

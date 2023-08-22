@@ -19,6 +19,7 @@ import com.legends.promiscuous.repositories.UserRepository;
 import com.legends.promiscuous.utils.AppUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -154,15 +155,12 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
+        ModelMapper modelMapper = new ModelMapper();
         User user = findUserById(id);
         Set<String> userInterests = updateUserRequest.getInterests();
         Set<Interest> interests = parseInterestsFrom(userInterests);
         user.setInterests(interests);
-        Address userAddress = user.getAddress();
-        userAddress.setCountry(updateUserRequest.getCountry());
-        userAddress.setState(updateUserRequest.getState());
-        userAddress.setStreet(updateUserRequest.getStreet());
-        userAddress.setHouseNumber(updateUserRequest.getHouseNumber());
+        Address userAddress = modelMapper.map(updateUserRequest, Address.class);
         user.setAddress(userAddress);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);
@@ -206,7 +204,7 @@ public class PromiscuousUserService implements UserService{
     }
 
     private static boolean validateFields(UpdateUserRequest updateUserRequest, Field field) {
-        List<String> list = List.of("interests","street","houseNumber","country","state");
+        List<String> list = List.of("interests","street","houseNumber","country","state", "gender");
         field.setAccessible(true);
         try {
             return field.get(updateUserRequest) != null && !list.contains(field.getName());
