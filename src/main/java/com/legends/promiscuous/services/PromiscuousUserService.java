@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.lang.reflect.Field;
@@ -42,6 +43,7 @@ public class PromiscuousUserService implements UserService{
     private final UserRepository userRepository;
     private final MailService mailService;
     private final AppConfig appConfig;
+    private final CloudService cloudService;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest registerUserRequest) {
@@ -156,6 +158,9 @@ public class PromiscuousUserService implements UserService{
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
         ModelMapper modelMapper = new ModelMapper();
+        boolean isFormWithProfileImage = newProfileImage(updateUserRequest) != null;
+        if(isFormWithProfileImage)cloudService.upload(newProfileImage(updateUserRequest));
+        
         User user = findUserById(id);
         Set<String> userInterests = updateUserRequest.getInterests();
         Set<Interest> interests = parseInterestsFrom(userInterests);
@@ -166,6 +171,10 @@ public class PromiscuousUserService implements UserService{
         user.setAddress(userAddress);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);
+    }
+
+    private static MultipartFile newProfileImage(UpdateUserRequest updateUserRequest) {
+        return updateUserRequest.getProfileImage();
     }
 
     private static Set<Interest> parseInterestsFrom(Set<String> interests){
