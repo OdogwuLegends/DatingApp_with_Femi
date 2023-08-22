@@ -208,7 +208,7 @@ public class PromiscuousUserService implements UserService{
     private static boolean isFieldWithValue(UpdateUserRequest updateUserRequest, Field field) {
         field.setAccessible(true);
         try {
-            return field.get(updateUserRequest) != null && !field.getName().equals("interests");
+            return field.get(updateUserRequest) != null && !field.getName().equals("interests") ;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
