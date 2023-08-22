@@ -158,6 +158,12 @@ public class PromiscuousUserService implements UserService{
         Set<String> userInterests = updateUserRequest.getInterests();
         Set<Interest> interests = parseInterestsFrom(userInterests);
         user.setInterests(interests);
+        Address userAddress = user.getAddress();
+        userAddress.setCountry(updateUserRequest.getCountry());
+        userAddress.setState(updateUserRequest.getState());
+        userAddress.setStreet(updateUserRequest.getStreet());
+        userAddress.setHouseNumber(updateUserRequest.getHouseNumber());
+        user.setAddress(userAddress);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);
     }
@@ -200,9 +206,9 @@ public class PromiscuousUserService implements UserService{
     }
 
     private static boolean isFieldWithValue(UpdateUserRequest updateUserRequest, Field field) {
+        field.setAccessible(true);
         try {
-            field.setAccessible(true);
-            return field.get(updateUserRequest) != null || field.getName().equals("interests");
+            return field.get(updateUserRequest) != null && !field.getName().equals("interests");
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
