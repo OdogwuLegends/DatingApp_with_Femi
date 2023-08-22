@@ -4,6 +4,7 @@ import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
 import com.legends.promiscuous.dtos.response.*;
+import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.exceptions.BadCredentialsException;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.repositories.AddressRepository;
@@ -142,13 +143,16 @@ public class UserServiceTest {
     }
 
     private UpdateUserRequest buildUpdateRequest() {
-        Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
+//        Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
+        Set<Interest> interests = Set.of(Interest.SWIMMING,Interest.COOKING,Interest.SPORTS);
         UpdateUserRequest updateUserRequest =  new UpdateUserRequest();
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
         updateUserRequest.setLastName("Awofiranye");
+                //TODO: FIX THIS MESS
 //        MultipartFile testImage = getTestImage();
 //        updateUserRequest.setProfileImage(testImage);
+//        updateUserRequest.setInterests(interests);
         updateUserRequest.setInterests(interests);
         return updateUserRequest;
     }

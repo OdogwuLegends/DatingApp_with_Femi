@@ -1,5 +1,6 @@
 package com.legends.promiscuous.dtos.requests;
 
+import com.legends.promiscuous.enums.Interest;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ public class UpdateUserRequest {
     private String password;
     private String phoneNumber;
     private String gender;
-    private Set<String> interests;
+//    private Set<String> interests;
+    private Set<Interest> interests;
     private MultipartFile profileImage;
 }

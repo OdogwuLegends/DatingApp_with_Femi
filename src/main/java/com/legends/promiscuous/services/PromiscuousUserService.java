@@ -175,7 +175,13 @@ public class PromiscuousUserService implements UserService{
         Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
         List<ReplaceOperation> operations = Arrays.stream(fields)
-                .filter(field -> field!=null)
+                .filter(field -> {
+                    try {
+                        return field.get(updateUserRequest)!=null;
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .map(field->{
                     try {
                         field.setAccessible(true);

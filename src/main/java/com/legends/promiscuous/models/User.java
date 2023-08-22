@@ -31,7 +31,7 @@ public class User {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
 
-    
+
     private String firstName;
     private String lastName;
 
