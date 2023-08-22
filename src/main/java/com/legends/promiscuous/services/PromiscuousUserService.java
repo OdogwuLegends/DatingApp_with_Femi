@@ -197,7 +197,7 @@ public class PromiscuousUserService implements UserService{
         Field[] fields = updateUserRequest.getClass().getDeclaredFields();
 
         List<ReplaceOperation> operations = Arrays.stream(fields)
-                                                    .filter(field -> isFieldWithValue(updateUserRequest, field))
+                                                    .filter(field -> validateFields(updateUserRequest, field))
                                                     .map(field->buildReplaceOperation(updateUserRequest, field))
                                                     .toList();
 
@@ -205,10 +205,11 @@ public class PromiscuousUserService implements UserService{
         return new JsonPatch(patchOperations);
     }
 
-    private static boolean isFieldWithValue(UpdateUserRequest updateUserRequest, Field field) {
+    private static boolean validateFields(UpdateUserRequest updateUserRequest, Field field) {
+        List<String> list = List.of("interests","street","houseNumber","country","state");
         field.setAccessible(true);
         try {
-            return field.get(updateUserRequest) != null && !field.getName().equals("interests") ;
+            return field.get(updateUserRequest) != null && !list.contains(field.getName());
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
