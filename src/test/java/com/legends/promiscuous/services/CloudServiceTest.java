@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class CloudServiceTest{
-
     @Autowired
     private CloudService cloudService;
 
