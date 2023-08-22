@@ -19,20 +19,18 @@ public class CloudinaryService implements CloudService{
     @Autowired
     private final AppConfig appConfig;
     @Override
-    public ApiResponse<?> upload(MultipartFile file) {
+    public String upload(MultipartFile file) {
         Cloudinary cloudinary = new Cloudinary();
         Uploader uploader = cloudinary.uploader();
         try{
             Map<?,?> response =  uploader.upload(file.getBytes(), ObjectUtils.asMap(
-                    "public_id","Promiscuous/Users/profile_images",
+                    "public_id","Promiscuous/Users/profile_images/stockphoto",
                     "api_key", appConfig.getCloudKey(),
                     "api_secret", appConfig.getCloudSecret(),
                     "cloud_name", appConfig.getCloudName(),
                     "secure", true
             ));
-            return ApiResponse.builder()
-                            .data(response.get("url").toString())
-                            .build();
+            return response.get("url").toString();
         }catch (IOException exception){
             throw new RuntimeException("File upload failed");
         }
