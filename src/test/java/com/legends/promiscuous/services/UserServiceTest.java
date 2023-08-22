@@ -143,8 +143,8 @@ public class UserServiceTest {
     }
 
     private UpdateUserRequest buildUpdateRequest() {
-//        Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
-        Set<Interest> interests = Set.of(Interest.SWIMMING,Interest.COOKING,Interest.SPORTS);
+        Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
+//        Set<Interest> interests = Set.of(Interest.SWIMMING,Interest.COOKING,Interest.SPORTS);
         UpdateUserRequest updateUserRequest =  new UpdateUserRequest();
         updateUserRequest.setDateOfBirth(LocalDate.of(2005, Month.NOVEMBER.ordinal(),25));
         updateUserRequest.setFirstName("Sheriff");
@@ -152,7 +152,7 @@ public class UserServiceTest {
                 //TODO: FIX THIS MESS
 //        MultipartFile testImage = getTestImage();
 //        updateUserRequest.setProfileImage(testImage);
-//        updateUserRequest.setInterests(interests);
+        updateUserRequest.setInterests(interests);
 //        updateUserRequest.setInterests(interests);
         return updateUserRequest;
     }

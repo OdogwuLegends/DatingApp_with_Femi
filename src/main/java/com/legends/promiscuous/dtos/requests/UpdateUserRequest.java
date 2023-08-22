@@ -22,7 +22,7 @@ public class UpdateUserRequest {
     private String password;
     private String phoneNumber;
     private String gender;
-//    private Set<String> interests;
-    private Set<Interest> interests;
+    private Set<String> interests;
+//    private Set<Interest> interests;
     private MultipartFile profileImage;
 }
