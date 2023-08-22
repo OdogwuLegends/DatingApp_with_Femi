@@ -177,14 +177,15 @@ public class PromiscuousUserService implements UserService{
         List<ReplaceOperation> operations = Arrays.stream(fields)
                 .filter(field -> {
                     try {
+                        field.setAccessible(true);
                         return field.get(updateUserRequest)!=null;
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .map(field->{
+                    field.setAccessible(true);
                     try {
-                        field.setAccessible(true);
                         String path = "/"+field.getName();
                         JsonPointer pointer = new JsonPointer(path);
                         String value = field.get(updateUserRequest).toString();

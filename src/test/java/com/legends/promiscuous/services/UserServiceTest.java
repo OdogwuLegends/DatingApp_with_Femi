@@ -153,7 +153,7 @@ public class UserServiceTest {
 //        MultipartFile testImage = getTestImage();
 //        updateUserRequest.setProfileImage(testImage);
 //        updateUserRequest.setInterests(interests);
-        updateUserRequest.setInterests(interests);
+//        updateUserRequest.setInterests(interests);
         return updateUserRequest;
     }
 
