@@ -151,7 +151,7 @@ public class UserServiceTest {
         updateUserRequest.setPassword("newPassword");
         updateUserRequest.setCountry("Nigeria");
         updateUserRequest.setInterests(interests);
-        
+
                 //TODO: FIX THIS MESS
 //        MultipartFile testImage = getTestImage();
 //        updateUserRequest.setProfileImage(testImage);
