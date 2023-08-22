@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
-import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.JsonPatchOperation;
@@ -30,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
 import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
 import static com.legends.promiscuous.utils.JwtUtil.*;
@@ -156,16 +155,19 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
-        ObjectMapper objectMapper = new ObjectMapper();
         User user = findUserById(id);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
+        return applyPatch(updatePatch, user);
+    }
+
+    private UpdateUserResponse applyPatch(JsonPatch updatePatch, User user) {
+        ObjectMapper objectMapper = new ObjectMapper();
         JsonNode userNode = objectMapper.convertValue(user, JsonNode.class);
         try {
             JsonNode updatedNode = updatePatch.apply(userNode);
             User updatedUser = objectMapper.convertValue(updatedNode, User.class);
             userRepository.save(updatedUser);
-            UpdateUserResponse updateUserResponse = new UpdateUserResponse("Profile Updated Successful");
-            return updateUserResponse;
+            return  new UpdateUserResponse(PROFILE_UPDATE_SUCCESSFUL.name());
         }catch (JsonPatchException exception){
             throw new PromiscuousBaseException(exception.getMessage());
         }
