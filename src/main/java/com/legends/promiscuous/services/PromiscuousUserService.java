@@ -162,10 +162,14 @@ public class PromiscuousUserService implements UserService{
 
     private UpdateUserResponse applyPatch(JsonPatch updatePatch, User user) {
         ObjectMapper objectMapper = new ObjectMapper();
+        //1. Convert user to JsonNode
         JsonNode userNode = objectMapper.convertValue(user, JsonNode.class);
         try {
+            //2. Apply patch to JsonNode from step 1
             JsonNode updatedNode = updatePatch.apply(userNode);
+            //3. Convert updatedNode back to user
             User updatedUser = objectMapper.convertValue(updatedNode, User.class);
+            //4. Save updated User
             userRepository.save(updatedUser);
             return  new UpdateUserResponse(PROFILE_UPDATE_SUCCESSFUL.name());
         }catch (JsonPatchException exception){
