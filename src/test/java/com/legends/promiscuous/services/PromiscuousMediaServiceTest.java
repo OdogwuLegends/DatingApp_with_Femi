@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 
 import static com.legends.promiscuous.enums.Reaction.DISLIKE;
 import static com.legends.promiscuous.enums.Reaction.LIKE;
+import static com.legends.promiscuous.utils.AppUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,58 +25,53 @@ import static org.junit.jupiter.api.Assertions.*;
 class PromiscuousMediaServiceTest {
     @Autowired
     private MediaService mediaService;
-
     @Autowired
     private UserService userService;
 
 
     @Test
     void testToUploadProfilePicture(){
-        String profilePicturePath = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\cloud.jpg";
-        Path testPath = Paths.get(profilePicturePath);
+        Path testPath = Paths.get(FIRST_PROFILE_PICTURE_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
             UploadMediaResponse uploadProfilePicture = mediaService.uploadProfilePicture(multipartFile);
             assertThat(uploadProfilePicture).isNotNull();
         } catch (IOException exception){
-            throw new RuntimeException("Media upload failed");
+            throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);
         }
     }
     @Test
     void testVideoCannotBeUploadedWhereProfilePictureRequired(){
-        String videoPath = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\WhatsApp Video 2023-08-22 at 22.03.22.mp4";
-        Path testPath = Paths.get(videoPath);
+        Path testPath = Paths.get(VIDEO_PATH_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
             assertThrows(RuntimeException.class,()->mediaService.uploadProfilePicture(multipartFile));
         } catch (IOException exception){
-            throw new RuntimeException("Media upload failed");
+            throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);
         }
     }
 
     @Test
     void testToUploadVideo(){
-        String videoPath = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\WhatsApp Video 2023-08-22 at 22.03.22.mp4";
-        Path testPath = Paths.get(videoPath);
+        Path testPath = Paths.get(VIDEO_PATH_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
             UploadMediaResponse uploadedVideo = mediaService.uploadMedia(multipartFile);
             assertThat(uploadedVideo).isNotNull();
         } catch (IOException exception){
-            throw new RuntimeException("Media upload failed");
+            throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);
         }
     }
 
     @Test
     void testToUploadImage(){
-        String image = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\planeone.jpg";
-        Path testPath = Paths.get(image);
+        Path testPath = Paths.get(SECOND_PROFILE_PICTURE_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
             UploadMediaResponse uploadedImage = mediaService.uploadMedia(multipartFile);
             assertThat(uploadedImage).isNotNull();
         } catch (IOException exception){
-            throw new RuntimeException("Media upload failed");
+            throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);
         }
     }
 
@@ -90,7 +86,7 @@ class PromiscuousMediaServiceTest {
 
         String response = mediaService.likeOrDislike(LIKE,registerUserResponse.getId());
         assertThat(response).isNotNull();
-        assertEquals("Liked!",response);
+        assertEquals(LIKED_MSG,response);
     }
 
     @Test
@@ -104,10 +100,10 @@ class PromiscuousMediaServiceTest {
 
         String response = mediaService.likeOrDislike(LIKE,registerUserResponse.getId());
         assertThat(response).isNotNull();
-        assertEquals("Liked!",response);
+        assertEquals(LIKED_MSG,response);
 
         response = mediaService.likeOrDislike(DISLIKE,registerUserResponse.getId());
         assertThat(response).isNotNull();
-        assertEquals("X",response);
+        assertEquals(DISLIKED_MSG,response);
     }
 }

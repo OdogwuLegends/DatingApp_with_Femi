@@ -4,12 +4,13 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.cloudinary.utils.ObjectUtils;
 import com.legends.promiscuous.config.AppConfig;
+import com.legends.promiscuous.dtos.response.GetUserResponse;
 import com.legends.promiscuous.dtos.response.UploadMediaResponse;
 import com.legends.promiscuous.enums.Reaction;
 import com.legends.promiscuous.models.Media;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.MediaRepository;
-import com.legends.promiscuous.repositories.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,23 +21,24 @@ import java.util.Optional;
 
 import static com.legends.promiscuous.enums.Reaction.DISLIKE;
 import static com.legends.promiscuous.enums.Reaction.LIKE;
+import static com.legends.promiscuous.utils.AppUtil.*;
 
 @Service
 public class PromiscuousMediaService implements MediaService{
     private final CloudService cloudService;
     private AppConfig appConfig;
     private MediaRepository mediaRepository;
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     public PromiscuousMediaService(CloudService cloudService,
                                    AppConfig appConfig,
                                    MediaRepository mediaRepository,
-                                   UserRepository userRepository){
+                                   UserService userService){
         this.cloudService = cloudService;
         this.appConfig = appConfig;
         this.mediaRepository = mediaRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
     @Override
     public UploadMediaResponse uploadMedia(MultipartFile file) {
@@ -47,13 +49,15 @@ public class PromiscuousMediaService implements MediaService{
     public UploadMediaResponse uploadProfilePicture(MultipartFile file) {
         cloudService.upload(file);
         UploadMediaResponse response = new UploadMediaResponse();
-        response.setMessage("Profile picture updated");
+        response.setMessage(PROFILE_PICTURE_UPDATED_MSG);
         return response;
     }
 
     @Override
     public String likeOrDislike(Reaction reaction, Long userId) {
-        User foundUser = userRepository.findById(userId).get();
+        GetUserResponse user = userService.getUserById(userId);
+        User foundUser = new User();
+        BeanUtils.copyProperties(user,foundUser);
         boolean isExistingUser = mediaRepository.existsByUser(foundUser);
 
         if(reaction == LIKE && !isExistingUser){
@@ -62,7 +66,7 @@ public class PromiscuousMediaService implements MediaService{
             media.setLike(true);
             media.getReactions().add(LIKE);
             mediaRepository.save(media);
-            return "Liked!";
+            return LIKED_MSG;
         }else if(reaction == DISLIKE && isExistingUser){
             Optional<Media> media = mediaRepository.findMediaByUserAndIsLikeIsTrue(foundUser);
             Media likedMedia = media.get();
@@ -70,7 +74,7 @@ public class PromiscuousMediaService implements MediaService{
             likedMedia.getReactions().remove(LIKE);
             mediaRepository.save(likedMedia);
         }
-        return "X";
+        return DISLIKED_MSG;
     }
 
     private UploadMediaResponse uploadVideo(MultipartFile file) {
@@ -87,10 +91,10 @@ public class PromiscuousMediaService implements MediaService{
             ));
 //            return response.get("url").toString();
             UploadMediaResponse mediaResponse = new UploadMediaResponse();
-            mediaResponse.setMessage("Media upload successful");
+            mediaResponse.setMessage(MEDIA_UPLOAD_SUCCESSFUL);
             return mediaResponse;
         }catch (IOException exception){
-            throw new RuntimeException("File upload failed: "+exception.getMessage());
+            throw new RuntimeException(FILE_UPLOAD_FAILED_MSG+exception.getMessage());
         }
 
     }

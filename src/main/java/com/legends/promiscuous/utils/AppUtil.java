@@ -19,9 +19,16 @@ public class AppUtil {
     public static final String BLANK_SPACE =  " ";
     public static final String EMPTY_STRING = "";
     private static final String ACTIVATE_ACCOUNT_PATH = "/user/activate?code=";
-
     public static final String JSON_PATCH_PATH_PREFIX = "/";
-
+    public static final String PROFILE_PICTURE_UPDATED_MSG = "Profile picture updated";
+    public static final String LIKED_MSG = "Liked!";
+    public static final String DISLIKED_MSG = "X";
+    public static final String MEDIA_UPLOAD_SUCCESSFUL = "Media upload successful";
+    public static final String FILE_UPLOAD_FAILED_MSG = "File upload failed: ";
+    public static final String MEDIA_UPLOAD_FAILED_MSG = "Media upload failed";
+    public static final String FIRST_PROFILE_PICTURE_FOR_TEST = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\cloud.jpg";
+    public static final String SECOND_PROFILE_PICTURE_FOR_TEST = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\planeone.jpg";
+    public static final String VIDEO_PATH_FOR_TEST = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\WhatsApp Video 2023-08-22 at 22.03.22.mp4";
     public static String generateActivationLink(String baseUrl,String email){
         String token = generateToken(email);
         String activationLink = baseUrl + ACTIVATE_ACCOUNT_PATH + token;
