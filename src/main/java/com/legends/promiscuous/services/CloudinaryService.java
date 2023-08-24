@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.cloudinary.utils.ObjectUtils;
 import com.legends.promiscuous.config.AppConfig;
-import com.legends.promiscuous.dtos.response.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +27,12 @@ public class CloudinaryService implements CloudService{
                     "api_key", appConfig.getCloudKey(),
                     "api_secret", appConfig.getCloudSecret(),
                     "cloud_name", appConfig.getCloudName(),
-                    "secure", true
+                    "secure", true,
+                    "resource_type", "image"
             ));
             return response.get("url").toString();
         }catch (IOException exception){
-            throw new RuntimeException("File upload failed");
+            throw new RuntimeException("File upload failed: "+exception.getMessage());
         }
-
     }
 }

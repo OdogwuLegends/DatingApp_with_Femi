@@ -65,6 +65,7 @@ public class PromiscuousUserService implements UserService{
 
         //5. return a response
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
+        registerUserResponse.setId(savedUser.getId());
         registerUserResponse.setMessage(ResponseMessage.USER_REGISTRATION_SUCCESSFUL.name());
 
         return registerUserResponse;

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ public class Media {
 //    @Enumerated
 //    @OneToMany
 //    private List<Reaction> reactions;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
     private List<Reaction> reactions;
 
@@ -30,4 +31,10 @@ public class Media {
     private User user;
 //    private Integer reactionCount = BigInteger.ZERO.intValue();
 
+
+    //We added these ones below
+    private boolean isLike;
+    public Media() {
+        this.reactions = new ArrayList<>();
+    }
 }
