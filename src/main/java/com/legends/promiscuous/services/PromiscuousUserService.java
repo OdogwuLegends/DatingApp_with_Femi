@@ -12,11 +12,12 @@ import com.legends.promiscuous.config.AppConfig;
 import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.enums.Interest;
+import com.legends.promiscuous.enums.Role;
 import com.legends.promiscuous.exceptions.*;
 import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
-import com.legends.promiscuous.utils.AppUtil;
+import com.legends.promiscuous.services.cloud.CloudService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,6 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
+import static com.legends.promiscuous.enums.Role.ADMIN;
 import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
 import static com.legends.promiscuous.utils.JwtUtil.*;
@@ -44,6 +46,7 @@ public class PromiscuousUserService implements UserService{
     private final MailService mailService;
     private final AppConfig appConfig;
     private final CloudService cloudService;
+    private final MediaService mediaService;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest registerUserRequest) {
@@ -65,33 +68,32 @@ public class PromiscuousUserService implements UserService{
 
         //5. return a response
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
-        registerUserResponse.setId(savedUser.getId());
         registerUserResponse.setMessage(ResponseMessage.USER_REGISTRATION_SUCCESSFUL.name());
 
         return registerUserResponse;
     }
 
-    @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
-
-        Optional<User> foundUser = userRepository.findByEmail(email);
-        User user = foundUser.orElseThrow(()-> new UserNotFoundException(
-                String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(), email)
-        ));
-
-        boolean isValidPassword = AppUtil.matches(user.getPassword(),password);
-        if(isValidPassword) return buildLoginResponse(email);
-        throw new BadCredentialsException(INVALID_CREDENTIALS_EXCEPTION.getMessage());
-    }
-
-    private static LoginResponse buildLoginResponse(String email) {
-        String accessToken = generateToken(email);
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setAccessToken(accessToken);
-        return loginResponse;
-    }
+//    @Override
+//    public LoginResponse login(LoginRequest loginRequest) {
+//        String email = loginRequest.getEmail();
+//        String password = loginRequest.getPassword();
+//
+//        Optional<User> foundUser = userRepository.findByEmail(email);
+//        User user = foundUser.orElseThrow(()-> new UserNotFoundException(
+//                String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(), email)
+//        ));
+//
+//        boolean isValidPassword = AppUtil.matches(user.getPassword(),password);
+//        if(isValidPassword) return buildLoginResponse(email);
+//        throw new BadCredentialsException(INVALID_CREDENTIALS_EXCEPTION.getMessage());
+//    }
+//
+//    private static LoginResponse buildLoginResponse(String email) {
+//        String accessToken = generateToken(email);
+//        LoginResponse loginResponse = new LoginResponse();
+//        loginResponse.setAccessToken(accessToken);
+//        return loginResponse;
+//    }
 
 
     @Override
@@ -101,12 +103,11 @@ public class PromiscuousUserService implements UserService{
 
         boolean isValidJwt = validateToken(token);
         if (isValidJwt) return activateAccount(token);
-
         throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
     }
 
     @Override
-    public GetUserResponse getUserById(long id) {
+    public GetUserResponse getUserById(long id) throws UserNotFoundException {
         Optional<User> foundUser = userRepository.findById(id);
         User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
         GetUserResponse getUserResponse = buildGetUserResponse(user);
@@ -134,10 +135,6 @@ public class PromiscuousUserService implements UserService{
                 .toList();
     }
 
-    @Override
-    public void deleteAll() {
-        userRepository.deleteAll();
-    }
 //    @Override
 //    public UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id){
 //        ObjectMapper mapper = new ObjectMapper();
@@ -172,6 +169,64 @@ public class PromiscuousUserService implements UserService{
         user.setAddress(userAddress);
         JsonPatch updatePatch = buildUpdatePatch(updateUserRequest);
         return applyPatch(updatePatch, user);
+    }
+    @Override
+    public UploadMediaResponse uploadMedia(MultipartFile mediaToUpload) {
+        return mediaService.uploadMedia(mediaToUpload);
+    }
+    @Override
+    public UploadMediaResponse uploadProfilePicture(MultipartFile mediaToUpload) {
+        return mediaService.uploadProfilePicture(mediaToUpload);
+    }
+    @Override
+    public ApiResponse<?> reactToMedia(MediaReactionRequest mediaReactionRequest) {
+        String response = mediaService.reactToMedia(mediaReactionRequest);
+        return ApiResponse.builder().data(response).build();
+    }
+
+    @Override
+    public GetUserResponse findUserByEmail(String email) {
+        Optional<User> foundUser = userRepository.findByEmail(email);
+        User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
+        GetUserResponse getUserResponse = buildGetUserResponse(user);
+        return getUserResponse;
+    }
+
+    @Override
+    public AdminInvitationResponse inviteAdmin(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
+
+        EmailNotificationRequest request = buildEmailRequest(user);
+        mailService.send(request);
+        return null;
+    }
+
+    @Override
+    public ApiResponse<?> acceptAdminInvitation(String token) {
+
+        boolean isTestToken = token.equals(appConfig.getTestToken());
+        if (isTestToken ) return  makeTestAdmin();
+
+        boolean isValidJwt = validateToken(token);
+        if (isValidJwt) return makeAdmin(token);
+
+        throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
+
+    }
+
+    @Override
+    public GetUserResponse suspendUser(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("User dose not exists");
+        }
+        User user = optionalUser.get();
+        user.setActive(false);
+        userRepository.save(user);
+
+        GetUserResponse getUserResponse = buildGetUserResponse(user);
+
+        return getUserResponse;
     }
 
     private String uploadImage(MultipartFile newProfileImage) {
@@ -241,7 +296,7 @@ public class PromiscuousUserService implements UserService{
         }
     }
 
-    private User findUserById(Long id){
+    public User findUserById(Long id){
         Optional<User> foundUser = userRepository.findById(id);
         User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
         return user;
@@ -252,18 +307,6 @@ public class PromiscuousUserService implements UserService{
         if(page < 1) return PageRequest.of(0, 10);
         if(pageSize < 1) return PageRequest.of(page,pageSize);
         return PageRequest.of(page - 1,pageSize);
-    }
-
-    private ApiResponse<?> activateAccount(String token) {
-        String email = extractEmailFrom(token);
-        Optional<User> user = userRepository.findByEmail(email);
-        User foundUser = user.orElseThrow(() ->new UserNotFoundException(
-                String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(),email)));
-        foundUser.setActive(true);
-        User savedUser = userRepository.save(foundUser);
-        GetUserResponse userResponse = buildGetUserResponse(savedUser);
-        var activateUserResponse = buildActivateUserResponse(userResponse);
-        return ApiResponse .builder().data(activateUserResponse).build();
     }
 
 
@@ -281,19 +324,65 @@ public class PromiscuousUserService implements UserService{
                 .fullName(getFullName(savedUser))
                 .phoneNumber(savedUser.getPhoneNumber())
                 .email(savedUser.getEmail())
+                .isActive(savedUser.isActive())
+                .role(savedUser.getRole())
                 .build();
     }
 
     private static String getFullName(User savedUser) {
         return savedUser.getFirstName() + BLANK_SPACE + savedUser.getLastName();
     }
+    private ApiResponse<?> makeAdmin(String token) {
+        String email = extractEmailFrom(token);
+        return buildMakeAdminBody(email);
+    }
+    private  ApiResponse<?> makeTestAdmin() {
+        String email = "test@email.com";
+        return buildMakeAdminBody(email);
+    }
+    public ApiResponse<?> buildMakeAdminBody(String email) {
 
-    private static ApiResponse<?> activateTestAccount() {
-        ApiResponse<?> activateAccountResponse =
-                ApiResponse
-                        .builder()
-                        .build();
-        return activateAccountResponse;
+        User savedUser = changeUserState(email, ADMIN);
+
+        GetUserResponse userResponse = buildGetUserResponse(savedUser);
+        var activateUserResponse = buildActivateUserResponse(userResponse);
+        return ApiResponse.builder().data(activateUserResponse).build();
+    }
+
+    private User changeUserState(String email, Role role) {
+        User foundUser = findUserToChangeState(email);
+
+        if(foundUser.isActive()) foundUser.setRole(role);
+        else throw new PromiscuousBaseException("User Is Not Yet Activated");
+
+        User savedUser = userRepository.save(foundUser);
+        return savedUser;
+    }
+    private User changeUserState(String email, boolean isActive) {
+        User foundUser = findUserToChangeState(email);
+        foundUser.setActive(isActive);
+        User savedUser = userRepository.save(foundUser);
+        return savedUser;
+    }
+    private User findUserToChangeState(String email){
+       return userRepository.findByEmail(email)
+                            .orElseThrow(() ->new UserNotFoundException(
+                                    String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(), email)));
+    }
+    private  ApiResponse<?> activateTestAccount() {
+            String email = "test@email.com";
+        return buildActivationResponse(email);
+    }
+    private ApiResponse<?> activateAccount(String token) {
+        String email = extractEmailFrom(token);
+        return buildActivationResponse(email);
+    }
+    private ApiResponse<?> buildActivationResponse(String email) {
+        User savedUser = changeUserState(email, true);
+
+        GetUserResponse userResponse = buildGetUserResponse(savedUser);
+        var activateUserResponse = buildActivateUserResponse(userResponse);
+        return ApiResponse.builder().data(activateUserResponse).build();
     }
 
     private EmailNotificationRequest buildEmailRequest(User savedUser) {

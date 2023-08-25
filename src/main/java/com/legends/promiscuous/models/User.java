@@ -8,8 +8,7 @@ import com.legends.promiscuous.enums.Gender;
 import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
@@ -22,6 +21,9 @@ import java.util.Set;
 @Setter
 @Getter
 //@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,7 +46,7 @@ public class User {
     @Column(unique = true)
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
     @Enumerated(value = EnumType.STRING)

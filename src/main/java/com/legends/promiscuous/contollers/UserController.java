@@ -1,12 +1,8 @@
 package com.legends.promiscuous.contollers;
 
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.legends.promiscuous.dtos.requests.*;
-import com.legends.promiscuous.dtos.response.GetUserResponse;
-import com.legends.promiscuous.dtos.response.RegisterUserResponse;
-import com.legends.promiscuous.dtos.response.UpdateUserResponse;
-import com.legends.promiscuous.dtos.response.UploadMediaResponse;
-import com.legends.promiscuous.enums.Reaction;
-import com.legends.promiscuous.services.MediaService;
+import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final MediaService mediaService;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterUserResponse> register(@RequestBody RegisterUserRequest request){
@@ -54,26 +49,25 @@ public class UserController {
 //    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdateUserResponse> updateUserProfile(@ModelAttribute UpdateUserRequest updateUserRequest, @PathVariable Long id){
+    public ResponseEntity<UpdateUserResponse> updateUserProfile(@ModelAttribute UpdateUserRequest updateUserRequest, @PathVariable Long id) throws JsonPatchException {
        UpdateUserResponse response =  userService.updateProfile(updateUserRequest,id);
        return ResponseEntity.ok(response);
     }
     @PostMapping("/uploadMedia")
     public ResponseEntity<UploadMediaResponse> uploadMedia(@ModelAttribute UploadMediaRequest mediaRequest){
         MultipartFile mediaToUpload = mediaRequest.getMedia();
-        UploadMediaResponse response = mediaService.uploadMedia(mediaToUpload);
+        UploadMediaResponse response = userService.uploadMedia(mediaToUpload);
         return ResponseEntity.ok(response);
     }
     @PostMapping("uploadProfilePicture")
     public ResponseEntity<UploadMediaResponse> uploadProfilePicture(@ModelAttribute UploadMediaRequest mediaRequest){
         MultipartFile mediaToUpload = mediaRequest.getMedia();
-        UploadMediaResponse response = mediaService.uploadProfilePicture(mediaToUpload);
+        UploadMediaResponse response = userService.uploadProfilePicture(mediaToUpload);
         return ResponseEntity.ok(response);
     }
-    @PostMapping("/likeOrDislike/{id}")
-    public ResponseEntity<?> likeOrDislike(@RequestBody LikeOrDislikeRequest userReaction, @PathVariable Long id){
-        Reaction mediaReaction = userReaction.getReaction();
-        String response = mediaService.likeOrDislike(mediaReaction,id);
+    @PostMapping("/react/{id}")
+    public ResponseEntity<?> reactToMedia(@RequestBody MediaReactionRequest mediaReactionRequest){
+        ApiResponse<?> response = userService.reactToMedia(mediaReactionRequest);
         return ResponseEntity.ok(response);
     }
 }

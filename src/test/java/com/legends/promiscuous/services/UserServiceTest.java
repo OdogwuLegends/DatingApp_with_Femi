@@ -1,12 +1,10 @@
 package com.legends.promiscuous.services;
 
-import com.legends.promiscuous.dtos.requests.LoginRequest;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
 import com.legends.promiscuous.dtos.response.*;
-import com.legends.promiscuous.exceptions.BadCredentialsException;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
-import com.legends.promiscuous.repositories.AddressRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,10 +21,10 @@ import java.time.Month;
 import java.util.List;
 import java.util.Set;
 
+import static com.legends.promiscuous.enums.Role.ADMIN;
 import static com.legends.promiscuous.utils.AppUtil.BLANK_SPACE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -34,8 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UserServiceTest {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AddressRepository addressRepository;
+
 
 //    @AfterEach
 //    void tearDown(){
@@ -77,6 +74,7 @@ public class UserServiceTest {
 //        assertThat(activateUserAccountResponse).isNotNull();
 
         ApiResponse<?> activateUserAccountResponse = userService.activateUserAccount("abc1234.erytuuoi.67t75646");
+
         assertThat(activateUserAccountResponse).isNotNull();
     }
 
@@ -103,28 +101,28 @@ public class UserServiceTest {
         assertThat(users.size()).isEqualTo(5);
     }
 
-    @Test
-    public void testThatUsersCanLogin(){
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test1@email.com");
-        loginRequest.setPassword("password");
-        LoginResponse response = userService.login(loginRequest);
-        assertThat(response).isNotNull();
-        String token = response.getAccessToken();
-        assertThat(token).isNotNull();
-    }
+//    @Test
+//    public void testThatUsersCanLogin(){
+//        LoginRequest loginRequest = new LoginRequest();
+//        loginRequest.setEmail("test1@email.com");
+//        loginRequest.setPassword("password");
+//        LoginResponse response = userService.login(loginRequest);
+//        assertThat(response).isNotNull();
+//        String token = response.getAccessToken();
+//        assertThat(token).isNotNull();
+//    }
+//
+//    @Test
+//    public void testThatExceptionIsThrownWhenUserAuthenticatesWithBadCredentials(){
+//        LoginRequest loginRequest = new LoginRequest();
+//        loginRequest.setEmail("test1@email.com");
+//        loginRequest.setPassword("bad_password");
+//
+//        assertThatThrownBy(()->userService.login(loginRequest)).isInstanceOf(BadCredentialsException.class);
+//    }
 
     @Test
-    public void testThatExceptionIsThrownWhenUserAuthenticatesWithBadCredentials(){
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test1@email.com");
-        loginRequest.setPassword("bad_password");
-
-        assertThatThrownBy(()->userService.login(loginRequest)).isInstanceOf(BadCredentialsException.class);
-    }
-
-    @Test
-    public void testThatUserCanUpdateAccount(){
+    public void testThatUserCanUpdateAccount() throws JsonPatchException {
         UpdateUserRequest updateUserRequest = buildUpdateRequest();
 
         UpdateUserResponse response = userService.updateProfile(updateUserRequest, 500L);
@@ -140,7 +138,42 @@ public class UserServiceTest {
 
         assertThat(fullName).isEqualTo(expectedFullName);
     }
+    @Test
+    public void testThatUserCanBeSuspended(){
+        String token = "abc1234.erytuuoi.67t75646";
+        String email = "test@email.com";
 
+        ApiResponse<?> activateUserAccountResponse = userService.activateUserAccount(token);
+        assertThat(activateUserAccountResponse).isNotNull();
+
+        var firstResponse = userService.findUserByEmail(email);
+            assertTrue(firstResponse.isActive());
+
+        var response = userService.suspendUser(email);
+            assertFalse(response.isActive());
+
+
+}
+    @Test
+    public void testThatAdminCanBeInvited(){
+        String token = "abc1234.erytuuoi.67t75646";
+        String email = "test@email.com";
+
+        ApiResponse<?> activateUserAccountResponse = userService.activateUserAccount(token);
+        assertThat(activateUserAccountResponse).isNotNull();
+
+        var firstResponse = userService.findUserByEmail(email);
+        assertTrue(firstResponse.isActive());
+
+        AdminInvitationResponse adminInvitationResponse = userService.inviteAdmin(email);
+
+        ApiResponse<?> adminAcceptanceResponse = userService.acceptAdminInvitation(token);
+        assertThat(adminAcceptanceResponse).isNotNull();
+
+        var adminFoundResponse = userService.findUserByEmail(email);
+        assertEquals(adminFoundResponse.getRole(), ADMIN);
+
+    }
     private UpdateUserRequest buildUpdateRequest() {
         Set<String> interests = Set.of("Swimming", "Sports", "Cooking");
         UpdateUserRequest updateUserRequest =  new UpdateUserRequest();

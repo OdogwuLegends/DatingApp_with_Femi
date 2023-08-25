@@ -1,4 +1,4 @@
-package com.legends.promiscuous.services;
+package com.legends.promiscuous.services.cloud;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
@@ -28,7 +28,7 @@ public class CloudinaryService implements CloudService{
                     "api_secret", appConfig.getCloudSecret(),
                     "cloud_name", appConfig.getCloudName(),
                     "secure", true,
-                    "resource_type", "image"
+                    "resource_type", "auto"
             ));
             return response.get("url").toString();
         }catch (IOException exception){

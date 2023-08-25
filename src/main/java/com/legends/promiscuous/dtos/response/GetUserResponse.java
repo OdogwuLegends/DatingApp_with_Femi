@@ -1,5 +1,6 @@
 package com.legends.promiscuous.dtos.response;
 
+import com.legends.promiscuous.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,4 +17,6 @@ public class GetUserResponse {
     private String phoneNumber;
     private String address;
     private String profileImage;
+    private boolean isActive;
+    private Role role;
 }

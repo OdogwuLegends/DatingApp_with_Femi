@@ -20,11 +20,10 @@ public class Media {
 //    @Enumerated
 //    @OneToMany
 //    private List<Reaction> reactions;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(value = EnumType.STRING)
-    private List<Reaction> reactions;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<MediaReaction> reactions;
 
-    @Column(columnDefinition = "MEDIUMTEXT",length = 1000, unique = true)
+    @Column(unique = true)
     private String url;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.legends.promiscuous.services;
 
+import com.legends.promiscuous.dtos.requests.MediaReactionRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.response.RegisterUserResponse;
 import com.legends.promiscuous.dtos.response.UploadMediaResponse;
@@ -84,26 +85,8 @@ class PromiscuousMediaServiceTest {
         assertNotNull(registerUserResponse);
         assertNotNull(registerUserResponse.getMessage());
 
-        String response = mediaService.likeOrDislike(LIKE,registerUserResponse.getId());
+        String response = mediaService.reactToMedia(new MediaReactionRequest(LIKE,500L,501L));
         assertThat(response).isNotNull();
-        assertEquals(LIKED_MSG,response);
     }
 
-    @Test
-    void testToDislikeMedia(){
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setEmail("sayhello@gmail.com");
-        registerUserRequest.setPassword("password");
-        RegisterUserResponse registerUserResponse = userService.register(registerUserRequest);
-        assertNotNull(registerUserResponse);
-        assertNotNull(registerUserResponse.getMessage());
-
-        String response = mediaService.likeOrDislike(LIKE,registerUserResponse.getId());
-        assertThat(response).isNotNull();
-        assertEquals(LIKED_MSG,response);
-
-        response = mediaService.likeOrDislike(DISLIKE,registerUserResponse.getId());
-        assertThat(response).isNotNull();
-        assertEquals(DISLIKED_MSG,response);
-    }
 }

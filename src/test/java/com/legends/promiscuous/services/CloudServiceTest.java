@@ -1,6 +1,6 @@
 package com.legends.promiscuous.services;
 
-import com.legends.promiscuous.dtos.response.ApiResponse;
+import com.legends.promiscuous.services.cloud.CloudService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
