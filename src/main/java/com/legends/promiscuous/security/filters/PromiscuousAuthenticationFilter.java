@@ -13,13 +13,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import static com.legends.promiscuous.utils.JwtUtil.generateToken;
+import static com.legends.promiscuous.utils.JwtUtil.generateAccessToken;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
@@ -53,8 +57,10 @@ public class PromiscuousAuthenticationFilter extends UsernamePasswordAuthenticat
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        String email = authResult.getPrincipal().toString();
-        String token = generateToken(email);
+
+        Collection<? extends GrantedAuthority> userAuthorities = authResult.getAuthorities();
+        List<? extends GrantedAuthority> authorities = new ArrayList<>(userAuthorities);
+        String token = generateAccessToken(authorities);
         var apiResponse =  ApiResponse.builder().data(token);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.getWriter().print(apiResponse);

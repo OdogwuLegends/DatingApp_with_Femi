@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.legends.promiscuous.utils.JwtUtil.generateToken;
+import static com.legends.promiscuous.utils.JwtUtil.generateVerificationToken;
 
 public class AppUtil {
     public static final String APP_NAME = "Promiscuous inc";
@@ -30,7 +30,7 @@ public class AppUtil {
     public static final String SECOND_PROFILE_PICTURE_FOR_TEST = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\planeone.jpg";
     public static final String VIDEO_PATH_FOR_TEST = "C:\\Users\\USER\\Desktop\\SPRINGBOOT\\promiscuous\\src\\test\\resources\\images\\WhatsApp Video 2023-08-22 at 22.03.22.mp4";
     public static String generateActivationLink(String baseUrl,String email){
-        String token = generateToken(email);
+        String token = generateVerificationToken(email);
         String activationLink = baseUrl + ACTIVATE_ACCOUNT_PATH + token;
         return activationLink;
     }
