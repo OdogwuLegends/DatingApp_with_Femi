@@ -27,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,14 +53,16 @@ public class PromiscuousUserService implements UserService{
     private final AppConfig appConfig;
     private final CloudService cloudService;
     private final MediaService mediaService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest registerUserRequest) {
         String email = registerUserRequest.getEmail();
         String password = registerUserRequest.getPassword();
+        String hashedPassword = passwordEncoder.encode(password);
         User user = new User();
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(hashedPassword);
         user.setAddress(new Address());
         user.setRole(CUSTOMER);
         User savedUser = userRepository.save(user);
