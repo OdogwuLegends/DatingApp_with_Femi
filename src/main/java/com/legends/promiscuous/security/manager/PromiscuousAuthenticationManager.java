@@ -1,5 +1,6 @@
 package com.legends.promiscuous.security.manager;
 
+import com.legends.promiscuous.exceptions.AuthenticationNotSupportedException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +15,9 @@ public class PromiscuousAuthenticationManager implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        if(authenticationProvider.supports(authentication.getClass())){
         return authenticationProvider.authenticate(authentication);
+        }
+        throw new AuthenticationNotSupportedException("Authentication not supported on this system");
     }
 }

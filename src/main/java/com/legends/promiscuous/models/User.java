@@ -9,7 +9,6 @@ import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

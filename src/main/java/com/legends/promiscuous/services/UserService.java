@@ -1,5 +1,6 @@
 package com.legends.promiscuous.services;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.MediaReactionRequest;

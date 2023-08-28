@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
 import static com.legends.promiscuous.enums.Role.ADMIN;
+import static com.legends.promiscuous.enums.Role.CUSTOMER;
 import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
 import static com.legends.promiscuous.utils.JwtUtil.*;
@@ -50,23 +51,18 @@ public class PromiscuousUserService implements UserService{
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest registerUserRequest) {
-        //1. extract registration details from the registration form(registerUserRequest)
         String email = registerUserRequest.getEmail();
         String password = registerUserRequest.getPassword();
-        //2. create a user profile with the registration details
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         user.setAddress(new Address());
-        //3. save that users profile in the Database
+        user.setRole(CUSTOMER);
         User savedUser = userRepository.save(user);
-        log.info("saved guy-->{}", savedUser);
 
-        //4. send verification token to the users email
         EmailNotificationRequest request = buildEmailRequest(savedUser);
         mailService.send(request);
 
-        //5. return a response
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
         registerUserResponse.setMessage(ResponseMessage.USER_REGISTRATION_SUCCESSFUL.name());
 
