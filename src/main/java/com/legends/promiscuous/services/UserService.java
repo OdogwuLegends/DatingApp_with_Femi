@@ -10,7 +10,6 @@ import com.legends.promiscuous.models.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     RegisterUserResponse register(RegisterUserRequest service);
@@ -36,7 +35,7 @@ public interface UserService {
 
     ApiResponse<?> acceptAdminInvitation(String token);
 
-    User getUserByUsername(String email);
+    User getUserByEmail(String email);
 
 //    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
 }

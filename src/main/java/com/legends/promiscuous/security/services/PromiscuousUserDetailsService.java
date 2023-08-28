@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class PromiscuousUserDetailsService implements UserDetailsService {
     private final UserService userService;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userService.getUserByEmail(email);
         UserDetails userDetails = new SecureUser(user);
         return userDetails;
     }
