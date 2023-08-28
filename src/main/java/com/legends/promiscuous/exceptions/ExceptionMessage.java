@@ -7,7 +7,8 @@ public enum ExceptionMessage {
     USER_REGISTRATION_FAILED_EXCEPTION("User registration failed"),
     MEDIA_NOT_FOUND(""),
     ACCOUNT_ACTIVATION_FAILED_EXCEPTION("Account activation was not successful"),
-    INVALID_CREDENTIALS_EXCEPTION("Invalid authentication credentials");
+    INVALID_CREDENTIALS_EXCEPTION("Invalid authentication credentials"),
+    AUTHENTICATION_NOT_SUPPORTED("Authentication not supported on this system");
 
 
     ExceptionMessage(String message){

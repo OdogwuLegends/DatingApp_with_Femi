@@ -23,7 +23,6 @@ public class PromiscuousAuthenticationProvider implements AuthenticationProvider
     private final PasswordEncoder passwordEncoder;
 
 
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //1. take the username from the request(contained in the authentication object) and use
