@@ -36,7 +36,7 @@ public interface UserService {
 
     ApiResponse<?> acceptAdminInvitation(String token);
 
-    Optional<User> getUserByUsername(String username);
+    User getUserByUsername(String email);
 
 //    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
 }

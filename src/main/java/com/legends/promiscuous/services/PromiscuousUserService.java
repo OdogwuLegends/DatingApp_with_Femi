@@ -215,8 +215,8 @@ public class PromiscuousUserService implements UserService{
     }
 
     @Override
-    public Optional<User> getUserByUsername(String username) {
-        return Optional.empty();
+    public User getUserByUsername(String email) {
+       return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException(String.format(USER_WITH_EMAIL_NOT_FOUND_EXCEPTION.getMessage(),email)));
     }
 
     @Override
