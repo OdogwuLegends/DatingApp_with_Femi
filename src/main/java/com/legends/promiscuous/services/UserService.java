@@ -1,8 +1,6 @@
 package com.legends.promiscuous.services;
 
-import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.legends.promiscuous.dtos.requests.LoginRequest;
 import com.legends.promiscuous.dtos.requests.MediaReactionRequest;
 import com.legends.promiscuous.dtos.requests.RegisterUserRequest;
 import com.legends.promiscuous.dtos.requests.UpdateUserRequest;
@@ -12,6 +10,7 @@ import com.legends.promiscuous.models.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     RegisterUserResponse register(RegisterUserRequest service);
@@ -36,6 +35,8 @@ public interface UserService {
     AdminInvitationResponse inviteAdmin(String email);
 
     ApiResponse<?> acceptAdminInvitation(String token);
+
+    Optional<User> getUserByUsername(String username);
 
 //    UpdateUserResponse updateUserProfile(JsonPatch jsonPatch, Long id);
 }

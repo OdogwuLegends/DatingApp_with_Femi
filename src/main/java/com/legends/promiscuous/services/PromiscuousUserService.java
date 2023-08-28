@@ -13,7 +13,10 @@ import com.legends.promiscuous.dtos.requests.*;
 import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
-import com.legends.promiscuous.exceptions.*;
+import com.legends.promiscuous.exceptions.AccountActivationFailedException;
+import com.legends.promiscuous.exceptions.ExceptionMessage;
+import com.legends.promiscuous.exceptions.PromiscuousBaseException;
+import com.legends.promiscuous.exceptions.UserNotFoundException;
 import com.legends.promiscuous.models.Address;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
@@ -27,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,9 +37,11 @@ import java.util.stream.Collectors;
 import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
 import static com.legends.promiscuous.enums.Role.ADMIN;
 import static com.legends.promiscuous.enums.Role.CUSTOMER;
-import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
+import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_NOT_FOUND_EXCEPTION;
+import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_WITH_EMAIL_NOT_FOUND_EXCEPTION;
 import static com.legends.promiscuous.utils.AppUtil.*;
-import static com.legends.promiscuous.utils.JwtUtil.*;
+import static com.legends.promiscuous.utils.JwtUtil.extractEmailFrom;
+import static com.legends.promiscuous.utils.JwtUtil.validateToken;
 
 @Service
 @RequiredArgsConstructor
@@ -208,6 +212,11 @@ public class PromiscuousUserService implements UserService{
 
         throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
 
+    }
+
+    @Override
+    public Optional<User> getUserByUsername(String username) {
+        return Optional.empty();
     }
 
     @Override
