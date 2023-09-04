@@ -57,7 +57,7 @@ class PromiscuousMediaServiceTest {
         Path testPath = Paths.get(VIDEO_PATH_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
-            UploadMediaResponse uploadedVideo = mediaService.uploadMedia(multipartFile);
+            UploadMediaResponse uploadedVideo = mediaService.uploadMedia(multipartFile, null);
             assertThat(uploadedVideo).isNotNull();
         } catch (IOException exception){
             throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);
@@ -69,7 +69,7 @@ class PromiscuousMediaServiceTest {
         Path testPath = Paths.get(SECOND_PROFILE_PICTURE_FOR_TEST);
         try(InputStream inputStream = Files.newInputStream(testPath)){
             MultipartFile multipartFile = new MockMultipartFile("test",inputStream);
-            UploadMediaResponse uploadedImage = mediaService.uploadMedia(multipartFile);
+            UploadMediaResponse uploadedImage = mediaService.uploadMedia(multipartFile,null);
             assertThat(uploadedImage).isNotNull();
         } catch (IOException exception){
             throw new RuntimeException(MEDIA_UPLOAD_FAILED_MSG);

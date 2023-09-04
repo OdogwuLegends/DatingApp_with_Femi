@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class RegisterUserResponse {
     private String message;
-    private Long id;
 }

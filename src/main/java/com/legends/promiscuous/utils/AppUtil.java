@@ -49,6 +49,8 @@ public class AppUtil {
             throw new PromiscuousBaseException(e.getMessage());
         }
     }
-
+    public static List<String> getPublicPaths(){
+        return List.of("/api/v1/user/register","/login");
+    }
 
 }

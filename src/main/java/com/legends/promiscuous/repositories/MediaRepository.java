@@ -12,4 +12,5 @@ public interface MediaRepository extends JpaRepository<Media,Long> {
 
     @Query("SELECT m FROM Media m WHERE m.user = :user AND m.isLike = true")
     Optional<Media> findMediaByUserAndIsLikeIsTrue(User user);
+    Optional<Media> findByUser(User user);
 }

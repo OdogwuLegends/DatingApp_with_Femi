@@ -14,10 +14,10 @@ import com.legends.promiscuous.dtos.response.*;
 import com.legends.promiscuous.enums.Interest;
 import com.legends.promiscuous.enums.Role;
 import com.legends.promiscuous.exceptions.AccountActivationFailedException;
-import com.legends.promiscuous.exceptions.ExceptionMessage;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.exceptions.UserNotFoundException;
 import com.legends.promiscuous.models.Address;
+import com.legends.promiscuous.models.Media;
 import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.UserRepository;
 import com.legends.promiscuous.services.cloud.CloudService;
@@ -38,8 +38,7 @@ import java.util.stream.Collectors;
 import static com.legends.promiscuous.dtos.response.ResponseMessage.PROFILE_UPDATE_SUCCESSFUL;
 import static com.legends.promiscuous.enums.Role.ADMIN;
 import static com.legends.promiscuous.enums.Role.CUSTOMER;
-import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_NOT_FOUND_EXCEPTION;
-import static com.legends.promiscuous.exceptions.ExceptionMessage.USER_WITH_EMAIL_NOT_FOUND_EXCEPTION;
+import static com.legends.promiscuous.exceptions.ExceptionMessage.*;
 import static com.legends.promiscuous.utils.AppUtil.*;
 import static com.legends.promiscuous.utils.JwtUtil.extractEmailFrom;
 import static com.legends.promiscuous.utils.JwtUtil.validateToken;
@@ -106,21 +105,21 @@ public class PromiscuousUserService implements UserService{
 
         boolean isValidJwt = validateToken(token);
         if (isValidJwt) return activateAccount(token);
-        throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
+        throw new AccountActivationFailedException(ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
     }
 
     @Override
     public GetUserResponse getUserById(long id) throws UserNotFoundException {
         Optional<User> foundUser = userRepository.findById(id);
         User user = foundUser.orElseThrow(()-> new UserNotFoundException(USER_NOT_FOUND_EXCEPTION.getMessage()));
+        Media media = mediaService.getMediaByUser(user);
         GetUserResponse getUserResponse = buildGetUserResponse(user);
+        getUserResponse.setProfileImage(media.getUrl());
         return getUserResponse;
     }
 
     @Override
     public List<GetUserResponse> getAllUsers(int page, int pageSize) {
-        List<GetUserResponse> users = new ArrayList<>();
-
         Pageable pageable = buildPageRequest(page,pageSize);
         Page<User> usersPage = userRepository.findAll(pageable);
         List<User> foundUsers =  usersPage.getContent();
@@ -157,11 +156,11 @@ public class PromiscuousUserService implements UserService{
 //    }
 
     @Override
-    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) {
+    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest, Long id) throws JsonPatchException {
         ModelMapper modelMapper = new ModelMapper();
-        String url =  uploadImage(updateUserRequest.getProfileImage());
-
         User user = findUserById(id);
+
+        mediaService.uploadMedia(updateUserRequest.getProfileImage(), user);
 
         Set<String> userInterests = updateUserRequest.getInterests();
         Set<Interest> interests = parseInterestsFrom(userInterests);
@@ -175,7 +174,7 @@ public class PromiscuousUserService implements UserService{
     }
     @Override
     public UploadMediaResponse uploadMedia(MultipartFile mediaToUpload) {
-        return mediaService.uploadMedia(mediaToUpload);
+        return null;
     }
     @Override
     public UploadMediaResponse uploadProfilePicture(MultipartFile mediaToUpload) {
@@ -213,7 +212,7 @@ public class PromiscuousUserService implements UserService{
         boolean isValidJwt = validateToken(token);
         if (isValidJwt) return makeAdmin(token);
 
-        throw new AccountActivationFailedException(ExceptionMessage.ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
+        throw new AccountActivationFailedException(ACCOUNT_ACTIVATION_FAILED_EXCEPTION.getMessage());
 
     }
 

@@ -5,6 +5,7 @@ import com.legends.promiscuous.dtos.response.UploadMediaResponse;
 import com.legends.promiscuous.exceptions.PromiscuousBaseException;
 import com.legends.promiscuous.models.Media;
 import com.legends.promiscuous.models.MediaReaction;
+import com.legends.promiscuous.models.User;
 import com.legends.promiscuous.repositories.MediaRepository;
 import com.legends.promiscuous.services.cloud.CloudService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static com.legends.promiscuous.dtos.response.ResponseMessage.SUCCESS;
 import static com.legends.promiscuous.exceptions.ExceptionMessage.MEDIA_NOT_FOUND;
+import static com.legends.promiscuous.exceptions.ExceptionMessage.RESOURCE_NOT_FOUND;
 import static com.legends.promiscuous.utils.AppUtil.PROFILE_PICTURE_UPDATED_MSG;
 
 @Service
@@ -27,8 +29,12 @@ public class PromiscuousMediaService implements MediaService{
         this.mediaRepository = mediaRepository;
     }
     @Override
-    public UploadMediaResponse uploadMedia(MultipartFile file) {
+    public UploadMediaResponse uploadMedia(MultipartFile file, User user) {
         String url = cloudService.upload(file);
+        Media media = new Media();
+        media.setUrl(url);
+        media.setUser(user);
+        mediaRepository.save(media);
         UploadMediaResponse response = new UploadMediaResponse();
         response.setMessage(url);
         return response;
@@ -53,5 +59,11 @@ public class PromiscuousMediaService implements MediaService{
         media.getReactions().add(reaction);
         mediaRepository.save(media);
         return SUCCESS.name();
+    }
+
+    @Override
+    public Media getMediaByUser(User user) {
+        return mediaRepository.findByUser(user).orElseThrow(()->new PromiscuousBaseException(RESOURCE_NOT_FOUND.name())
+        );
     }
 }

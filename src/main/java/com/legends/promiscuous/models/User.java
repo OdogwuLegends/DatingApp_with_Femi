@@ -66,7 +66,7 @@ public class User {
 
     @PrePersist
     public void setCreatedAt(){
-        var currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         createdAt = currentTime.format(formatter);
     }
